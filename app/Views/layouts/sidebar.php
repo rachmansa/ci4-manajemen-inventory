@@ -86,9 +86,9 @@
               </a>
             </li>
             <li class="menu-item">
-              <a href="/admin/activity-logs" class="menu-link">
+              <a href="/barang-masuk" class="menu-link">
                 <i class="menu-icon tf-icons fa fa-list"></i>
-                <div data-i18n="Basic">Activity Logs</div>
+                <div data-i18n="Basic">Barang Masuk</div>
               </a>
             </li>
             <!-- / TRANSAKSI -->

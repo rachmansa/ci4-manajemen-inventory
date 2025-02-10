@@ -64,6 +64,14 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->post('/barang/delete/(:num)', 'BarangController::delete/$1');
     $routes->get('barang/generate-kode/(:num)', 'BarangController::generateKode/$1');
 
+    // BARANG MASUK
+    $routes->get('/barang-masuk', 'BarangMasukController::index');
+    $routes->get('/barang-masuk/create', 'BarangMasukController::create');
+    $routes->post('/barang-masuk/store', 'BarangMasukController::store');
+    $routes->get('/barang-masuk/edit/(:num)', 'BarangMasukController::edit/$1');
+    $routes->post('/barang-masuk/update/(:num)', 'BarangMasukController::update/$1');
+    $routes->post('/barang-masuk/delete/(:num)', 'BarangMasukController::delete/$1');
+
     
 });
 

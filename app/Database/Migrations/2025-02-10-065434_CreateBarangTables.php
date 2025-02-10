@@ -4,14 +4,14 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateBarangTables extends Migration
+class BarangMigration extends Migration
 {
     public function up()
     {
         $this->forge->addField([
             'id_barang' => [
                 'type'           => 'INT',
-                'constraint'     => 11,
+                'constraint'     => 10,
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
@@ -21,32 +21,31 @@ class CreateBarangTables extends Migration
             ],
             'stok' => [
                 'type'       => 'INT',
-                'constraint' => 11,
+                'constraint' => 10,
                 'default'    => 0,
             ],
             'stok_minimal' => [
                 'type'       => 'INT',
-                'constraint' => 11,
-                'default'   => 1,
+                'constraint' => 10,
+                'default'    => 1,
             ],
             'kode_barang' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
             ],
             'deskripsi' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
+                'type'       => 'TEXT',
+                'null'       => true,
             ],
             'id_satuan' => [
                 'type'       => 'INT',
-                'constraint' => 11,
+                'constraint' => 10,
                 'unsigned'   => true,
             ],
             'id_jenis' => [
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            
         ]);
 
         $this->forge->addKey('id_barang', true);
