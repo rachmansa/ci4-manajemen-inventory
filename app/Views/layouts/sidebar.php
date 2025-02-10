@@ -9,6 +9,9 @@
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">DASHBOARD</span>
+            </li>
             <li class="menu-item">
               <a href="/dashboard" class="menu-link">
                 <i class="menu-icon tf-icons fa fa-chart-line"></i>
@@ -38,7 +41,7 @@
 
             <!-- DATA PERSIAPAN -->
             <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">DATA</span>
+              <span class="menu-header-text">PERSIAPAN DATA</span>
             </li>
             <li class="menu-item">
               <a href="/satuan-barang" class="menu-link">
@@ -71,6 +74,24 @@
               </a>
             </li>
             <!-- / DATA PERSIAPAN -->
+
+            <!-- TRANSAKSI -->
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">TRANSAKSI</span>
+            </li>
+            <li class="menu-item">
+              <a href="/barang" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-box-open"></i>
+                <div data-i18n="Basic">Barang</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="/admin/activity-logs" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-list"></i>
+                <div data-i18n="Basic">Activity Logs</div>
+              </a>
+            </li>
+            <!-- / TRANSAKSI -->
           </ul>
         </aside>
         <!-- / Menu -->
