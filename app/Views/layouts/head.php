@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 
-<html lang="en" class="layout-navbar-fixed layout-menu-fixed " dir="ltr" data-skin="default" data-bs-theme="light"
-  data-assets-path="<?= base_url('assets') ?>" data-template="vertical-menu-template-starter">
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="../assets/"
+  data-template="vertical-menu-template-free"
+>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
@@ -12,6 +18,7 @@
 
     <meta name="description" content="" />
 
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,7 +28,7 @@
     />
 
     <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="<?= base_url('assets/vendor/fonts/fontawesome.css') ?>"/>
+    <link rel="stylesheet" href="<?= base_url('assets/vendor/fonts/boxicons.css') ?>"/>
 
     <!-- Core CSS -->
     <link rel="stylesheet" href="<?= base_url('assets/vendor/css/core.css') ?>" class="template-customizer-core-css"/>
@@ -29,7 +36,6 @@
     <link rel="stylesheet" href="<?= base_url('assets/css/demo.css') ?>" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="<?= base_url('assets/vendor/libs/node-waves/node-waves.css') ?>" />
     <link rel="stylesheet" href="<?= base_url('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') ?>"/>
 
     <!-- Page CSS -->
@@ -45,6 +51,8 @@
     <!-- Include DataTables CSS -->
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <!-- <link rel="stylesheet" href="<?= base_url('assets/css/datatables.min.css')?> " /> -->
+ 
     
 
     <!-- Font Awesome Icons -->

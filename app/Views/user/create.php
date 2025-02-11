@@ -70,4 +70,5 @@
    <div class="content-backdrop fade"></div>
 </div>
 <!-- Content wrapper -->
+<?= $this->include('layouts/wrapper') ?>
 <?= $this->include('layouts/footer') ?>

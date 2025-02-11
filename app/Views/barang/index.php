@@ -10,7 +10,7 @@
          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
       <?php endif; ?>
-      
+
       <div class="card">
          <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="m-0">Daftar Barang</h5>
@@ -18,7 +18,7 @@
          </div>
          <div class="table-responsive text-nowrap">
             <table id="barangTable" class="table table-striped">
-               <thead>
+            <thead>
                   <tr>
                      <th>Nama Barang</th>
                      <th>Kode Barang</th>
@@ -33,12 +33,12 @@
                      <td><?= $barang['nama_barang'] ?></td>
                      <td>
                         <?php
-                        if (isset($barang['kode_barang']) && !empty($barang['kode_barang'])) {
-                           echo $barang['kode_barang'];
-                        } else {
-                           echo "-";
-                        }
-                        ?>
+                           if (isset($barang['kode_barang']) && !empty($barang['kode_barang'])) {
+                              echo $barang['kode_barang'];
+                           } else {
+                              echo "-";
+                           }
+                           ?>
                      </td>
                      <td><?= $barang['nama_jenis'] ?></td>
                      <td>
@@ -81,6 +81,7 @@
    </div>
 </div>
 
+<?= $this->include('layouts/wrapper') ?>
 <?= $this->include('layouts/footer') ?>
 
 <!-- Initialize DataTable & Modal Handling -->

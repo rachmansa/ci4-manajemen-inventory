@@ -69,6 +69,7 @@
    </div>
 </div>
 
+<?= $this->include('layouts/wrapper') ?>
 <?= $this->include('layouts/footer') ?>
 
 <!-- Initialize DataTable & Modal Handling -->

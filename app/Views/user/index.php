@@ -53,4 +53,5 @@
    <!-- / Content -->
 </div>
 <!-- Content wrapper -->
+<?= $this->include('layouts/wrapper') ?>
 <?= $this->include('layouts/footer') ?>
