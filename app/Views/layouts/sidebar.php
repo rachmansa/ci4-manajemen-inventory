@@ -86,9 +86,21 @@
               </a>
             </li>
             <li class="menu-item">
+              <a href="/barang-detail" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-circle-info"></i>
+                <div data-i18n="Basic">Detail Barang</div>
+              </a>
+            </li>
+            <li class="menu-item">
               <a href="/barang-masuk" class="menu-link">
-                <i class="menu-icon tf-icons fa fa-list"></i>
+                <i class="menu-icon tf-icons fa fa-circle-plus"></i>
                 <div data-i18n="Basic">Barang Masuk</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="/barang-keluar" class="menu-link">
+                <i class="menu-icon tf-icons fa fa-circle-minus"></i>
+                <div data-i18n="Basic">Barang Keluar</div>
               </a>
             </li>
             <!-- / TRANSAKSI -->

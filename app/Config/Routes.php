@@ -55,7 +55,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->post('/pegawai-unit/update/(:num)', 'PegawaiUnitController::update/$1');
     $routes->post('/pegawai-unit/delete/(:num)', 'PegawaiUnitController::delete/$1');
 
-    //BARANG
+    // BARANG
     $routes->get('/barang', 'BarangController::index');
     $routes->get('/barang/create', 'BarangController::create');
     $routes->post('/barang/store', 'BarangController::store');
@@ -71,6 +71,15 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/barang-masuk/edit/(:num)', 'BarangMasukController::edit/$1');
     $routes->post('/barang-masuk/update/(:num)', 'BarangMasukController::update/$1');
     $routes->post('/barang-masuk/delete/(:num)', 'BarangMasukController::delete/$1');
+
+    // BARANG DETAIL
+    $routes->get('/barang-detail', 'BarangDetailController::index');
+    $routes->get('/barang-detail/create', 'BarangDetailController::create');
+    $routes->post('/barang-detail/store', 'BarangDetailController::store');
+    $routes->get('/barang-detail/edit/(:num)', 'BarangDetailController::edit/$1');
+    $routes->post('/barang-detail/update/(:num)', 'BarangDetailController::update/$1');
+    $routes->post('/barang-detail/delete/(:num)', 'BarangDetailController::delete/$1');
+
 
     
 });
