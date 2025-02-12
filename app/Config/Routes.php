@@ -80,7 +80,16 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->post('/barang-detail/update/(:num)', 'BarangDetailController::update/$1');
     $routes->post('/barang-detail/delete/(:num)', 'BarangDetailController::delete/$1');
 
+    // BARANG LAB
+    $routes->get('/barang-lab', 'BarangLabController::index');
+    $routes->get('/barang-lab/create', 'BarangLabController::create');
+    $routes->post('/barang-lab/store', 'BarangLabController::store');
+    $routes->get('/barang-lab/edit/(:num)', 'BarangLabController::edit/$1');
+    $routes->post('/barang-lab/update/(:num)', 'BarangLabController::update/$1');
+    $routes->post('/barang-lab/delete/(:num)', 'BarangLabController::delete/$1');
+    $routes->get('/barang-lab/get-serials/(:num)', 'BarangLabController::getSerials/$1');
 
+    
     
 });
 

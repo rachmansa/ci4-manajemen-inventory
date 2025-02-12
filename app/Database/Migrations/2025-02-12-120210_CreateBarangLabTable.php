@@ -4,55 +4,62 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateBarangPegawaiUnitTables extends Migration
+class CreateBarangLabTable extends Migration
 {
     public function up()
     {
         $this->forge->addField([
-            'id_barang_pegawai_unit' => [
+            'id_barang_lab' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
                 'auto_increment' => true,
+            ],
+            'id_lab' => [
+                'type'       => 'INT',
+                'constraint' => 11,
             ],
             'id_barang' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'unsigned'   => true,
             ],
-            'id_pegawai_unit' => [
+            'id_barang_detail' => [
                 'type'       => 'INT',
                 'constraint' => 11,
+                'unsigned'   => true,
+                'null'       => true, // Bisa null jika barang tidak punya SN
+            ],
+            'jumlah' => [
+                'type'       => 'INT',
+                'constraint' => 11,
+                'unsigned'   => true,
             ],
             'id_jenis_penggunaan' => [
                 'type'       => 'INT',
                 'constraint' => 11,
             ],
-            'jumlah' => [
-                'type'       => 'INT',
-                'constraint' => 11,
+            'created_at' => [
+                'type'    => 'DATETIME',
+                'null'    => true,
             ],
-            'tanggal_serah_terima_awal' => [
-                'type' => 'DATE',
+            'updated_at' => [
+                'type'    => 'DATETIME',
+                'null'    => true,
             ],
-            'tanggal_serah_terima_akhir' => [
-                'type' => 'DATE',
-            ],
-            'keterangan' => [
-                'type'       => 'TEXT',
-                'null'       => true,
-            ]
         ]);
 
-        $this->forge->addKey('id_barang_pegawai_unit', true);
+        $this->forge->addKey('id_barang_lab', true);
+        $this->forge->addForeignKey('id_lab', 'lab_cat', 'id_lab', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('id_barang', 'barang', 'id_barang', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_pegawai_unit', 'pegawai_unit', 'id_pegawai_unit', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_barang_detail', 'barang_detail', 'id_barang_detail', 'CASCADE', 'SET NULL');
         $this->forge->addForeignKey('id_jenis_penggunaan', 'jenis_penggunaan', 'id_penggunaan', 'CASCADE', 'CASCADE');
-        $this->forge->createTable('barang_pegawai_unit');
+
+        $this->forge->createTable('barang_lab');
     }
 
     public function down()
     {
-        $this->forge->dropTable('barang_pegawai_unit');
+        $this->forge->dropTable('barang_lab');
     }
 }
