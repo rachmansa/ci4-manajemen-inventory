@@ -28,7 +28,7 @@
                      <?php endforeach; ?>
                   </select>
                </div>
-
+               
                <div id="serial_number_section" class="mb-3 d-none">
                   <label for="id_barang_detail" class="form-label">Pilih Serial Number</label>
                   <select class="form-select" name="id_barang_detail[]" id="id_barang_detail" multiple></select>
@@ -38,7 +38,8 @@
                      <label for="jumlah" class="form-label">Jumlah</label>
                      <input type="number" class="form-control" name="jumlah" id="jumlah">
                </div>
-
+               <p id="stok-info" style="margin-top: 10px; font-weight: bold;">Stok Tersedia: -</p>
+               
                <div class="mb-3">
                      <label for="id_lab" class="form-label">Lab</label>
                      <select class="form-select" name="id_lab" required>
@@ -133,4 +134,53 @@ $(function () {
         }
     });
 });
+</script>
+
+<!-- memunculkan stok barang jika barang yang dipilih tidak memiliki serial number -->
+<script>
+    $(document).ready(function () {
+       $('#stok-info').addClass('d-none'); // Sembunyikan info stok
+
+       $('#id_barang').change(function () {
+         let barangId = $(this).val();
+         let serialSelect = $('#id_barang_detail');
+
+         if (!barangId) {
+            $('#serial_number_section').addClass('d-none');
+            $('#stok-info').addClass('d-none');
+            serialSelect.empty().trigger('change');
+            $('#jumlah').val('').prop('readonly', false);
+            return;
+         }
+
+         $.ajax({
+            url: '<?= base_url('barang-lab/get-barang-info') ?>',
+            type: 'POST',
+            data: { id_barang: barangId },
+            dataType: 'json',
+            success: function (response) {
+                  serialSelect.empty();
+                  $('#stok-info').addClass('d-none'); // Sembunyikan stok info secara default
+
+                  if (response.serialNumbers.length > 0) {
+                     // Barang memiliki serial number
+                     $('#serial_number_section').removeClass('d-none');
+                     response.serialNumbers.forEach(serial => {
+                        serialSelect.append(new Option(serial.serial_number, serial.id_barang_detail, false, false));
+                     });
+                     serialSelect.trigger('change');
+                  } else {
+                     // Barang tidak memiliki serial number
+                     $('#serial_number_section').addClass('d-none');
+                     serialSelect.empty().trigger('change');
+                     $('#stok-info').removeClass('d-none').text('Stok Tersedia: ' + response.stok);
+                  }
+            },
+            error: function () {
+                  $('#stok-info').addClass('d-none').text('Gagal mengambil data barang.');
+            }
+         });
+      });
+
+    });
 </script>

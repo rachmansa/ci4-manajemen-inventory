@@ -229,4 +229,47 @@ class BarangLabController extends Controller
         return $this->response->setJSON($serials);
     }
 
+    public function getStok()
+    {
+        $id_barang = $this->request->getPost('id_barang');
+
+        $barang = $this->barangModel->find($id_barang);
+        if (!$barang) {
+            return $this->response->setJSON(['error' => 'Barang tidak ditemukan.']);
+        }
+
+        $stok_tersedia = $barang['stok'];
+
+        return $this->response->setJSON(['stok' => $stok_tersedia]);
+    }
+
+    public function getBarangInfo()
+    {
+        $id_barang = $this->request->getPost('id_barang');
+
+        $barang = $this->barangModel->find($id_barang);
+        if (!$barang) {
+            return $this->response->setJSON(['error' => 'Barang tidak ditemukan.']);
+        }
+
+        // Cek apakah barang punya serial number
+        $barangDetail = $this->barangDetailModel->where('id_barang', $id_barang)->findAll();
+        $serialNumbers = [];
+
+        if (!empty($barangDetail)) {
+            foreach ($barangDetail as $detail) {
+                $serialNumbers[] = [
+                    'id_barang_detail' => $detail['id_barang_detail'],
+                    'serial_number' => $detail['serial_number']
+                ];
+            }
+        }
+
+        return $this->response->setJSON([
+            'stok' => $barang['stok'],
+            'serialNumbers' => $serialNumbers
+        ]);
+    }
+
+
 }
