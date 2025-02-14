@@ -27,7 +27,7 @@ class BarangMigration extends Migration
             'stok_minimal' => [
                 'type'       => 'INT',
                 'constraint' => 10,
-                'default'    => 1,
+                'default'    => 0,
             ],
             'kode_barang' => [
                 'type'       => 'VARCHAR',

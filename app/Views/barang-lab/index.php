@@ -5,7 +5,7 @@
 <div class="content-wrapper">
    <div class="container-xxl flex-grow-1 container-p-y">
       <?php if (session()->getFlashdata('success')) : ?>
-      <div class="alert alert-success alert-dismissible show" role="alert">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
          <?= session()->getFlashdata('success') ?>
          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
@@ -20,26 +20,34 @@
             <table id="barangLabTable" class="table table-striped">
                <thead>
                   <tr>
-                     <th>No</th>
-                     <th>Barang</th>
-                     <th>Serial Number</th>
+                     <th>Nama Barang</th>
+                     <th>Kode Barang</th>
                      <th>Lab</th>
+                     <th>Nama Barang Lab</th>
+                     <th>Kondisi</th>
                      <th>Aksi</th>
                   </tr>
                </thead>
                <tbody>
-                  <?php foreach ($barang_labs as $key => $barangLab) : ?>
+                  <?php foreach ($barang_labs as $barang_lab) : ?>
                   <tr>
-                     <td><?= $key + 1 ?></td>
-                     <td><?= $barangLab['nama_barang'] ?></td>
-                     <td><?= $barangLab['serial_number'] ?></td>
-                     <td><?= $barangLab['nama_lab'] ?></td>
+                     <td><?= $barang_lab['nama_barang'] ?> </td>
                      <td>
-                        <a href="<?= base_url('barang-lab/edit/' . $barangLab['id_barang_lab']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="<?= base_url('barang-lab/delete/' . $barangLab['id_barang_lab']) ?>" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</button>
-                        </form>
-                    </td>
+                        <small>Nomor BMN : <?= $barang_lab['nomor_bmn'] ?></small> 
+                        <br> 
+                        <small>Serial Number : <?= !empty($barang_lab['serial_number']) ? $barang_lab['serial_number'] : "-" ?></small>
+                     </td>
+                     <td><?= $barang_lab['nama_lab'] ?></td>
+                     <td><?= $barang_lab['nama_barang_lab'] ?></td>
+                     <td>
+                        <span class="badge bg-<?= $barang_lab['kondisi'] == 'Baik' ? 'success' : ($barang_lab['kondisi'] == 'Rusak' ? 'danger' : 'warning') ?>">
+                            <?= ucfirst($barang_lab['kondisi']) ?>
+                        </span>
+                     </td>
+                     <td>
+                        <a href="<?= base_url('barang-lab/edit/' . $barang_lab['id_barang_lab']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="<?= $barang_lab['id_barang_lab'] ?>" data-nama="<?= $barang_lab['nama_barang'] ?>">Hapus</button>
+                     </td>
                   </tr>
                   <?php endforeach; ?>
                </tbody>
@@ -58,7 +66,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div class="modal-body">
-            <p>Apakah Anda yakin ingin menghapus barang detail <strong id="deleteItemName"></strong>?</p>
+            <p>Apakah Anda yakin ingin menghapus barang lab <strong id="deleteItemName"></strong>?</p>
          </div>
          <div class="modal-footer">
             <form id="deleteForm" method="post">

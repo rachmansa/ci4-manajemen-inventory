@@ -21,7 +21,10 @@
                <thead>
                   <tr>
                      <th>Nama Barang</th>
-                     <th>Serial Number</th>
+                     <th>Kode Barang</th>
+                     <th>Penggunaan</th>
+                     <th>Tahun</th>
+                     <th>Posisi</th>
                      <th>Status</th>
                      <th>Aksi</th>
                   </tr>
@@ -29,8 +32,15 @@
                <tbody>
                   <?php foreach ($barang_details as $barang_detail) : ?>
                   <tr>
-                     <td><?= $barang_detail['nama_barang'] ?></td>
-                     <td><?= !empty($barang_detail['serial_number']) ? $barang_detail['serial_number'] : "-" ?></td>
+                     <td><?= $barang_detail['nama_barang'] ?> <br> <small>Tahun : <?= $barang_detail['tahun_barang']?></small></td>
+                     <td>
+                        <small>Nomor BMN : <?= $barang_detail['nomor_bmn'] ?></small> 
+                        <br> 
+                        <small>Serial Number : <?= !empty($barang_detail['serial_number']) ? $barang_detail['serial_number'] : "-" ?></small>
+                     </td>
+                     <td><?= $barang_detail['nama_penggunaan'] ?></td>
+                     <td><?= $barang_detail['tahun_barang'] ?></td>
+                     <td><?= $barang_detail['nama_posisi'] ?></td>
                      <td>
                         <span class="badge bg-<?= $barang_detail['status_class'] ?>">
                             <?= ucfirst($barang_detail['status']) ?>

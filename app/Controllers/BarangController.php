@@ -30,7 +30,7 @@ class BarangController extends Controller
     {
         $data = [
             'satuan' => $this->satuanModel->findAll(),
-            'jenis' => $this->jenisModel->findAll()
+            'jenis'  => $this->jenisModel->findAll()
         ];
         return view('barang/create', $data);
     }
@@ -47,17 +47,20 @@ class BarangController extends Controller
             return redirect()->back()->withInput()->with('error', 'Validasi gagal. Harap isi semua kolom dengan benar.');
         }
 
-        $this->barangModel->insert([
-            'nama_barang'  => $this->request->getPost('nama_barang'),
-            'stok'         => $this->request->getPost('stok'),
-            'stok_minimal' => $this->request->getPost('stok_minimal'),
-            'kode_barang'  => $this->request->getPost('kode_barang'),
-            'deskripsi'    => $this->request->getPost('deskripsi'),
-            'id_satuan'    => $this->request->getPost('id_satuan'),
-            'id_jenis'     => $this->request->getPost('id_jenis')
-        ]);
-
-        return redirect()->to('/barang')->with('success', 'Barang berhasil ditambahkan.');
+        try {
+            $this->barangModel->insert([
+                'nama_barang'  => $this->request->getPost('nama_barang'),
+                'stok'         => $this->request->getPost('stok'),
+                'stok_minimal' => $this->request->getPost('stok_minimal'),
+                'kode_barang'  => $this->request->getPost('kode_barang'),
+                'deskripsi'    => $this->request->getPost('deskripsi'),
+                'id_satuan'    => $this->request->getPost('id_satuan'),
+                'id_jenis'     => $this->request->getPost('id_jenis')
+            ]);
+            return redirect()->to('/barang')->with('success', 'Barang berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan barang: ' . $e->getMessage());
+        }
     }
 
     public function edit($id)
@@ -87,37 +90,50 @@ class BarangController extends Controller
         ])) {
             return redirect()->back()->withInput()->with('error', 'Validasi gagal. Harap isi semua kolom dengan benar.');
         }
-        $this->barangModel->update($id, [
-            'nama_barang'  => $this->request->getPost('nama_barang'),
-            'stok'         => $this->request->getPost('stok'),
-            'stok_minimal' => $this->request->getPost('stok_minimal'),
-            'kode_barang'  => $this->request->getPost('kode_barang'),
-            'deskripsi'    => $this->request->getPost('deskripsi'),
-            'id_satuan'    => $this->request->getPost('id_satuan'),
-            'id_jenis'     => $this->request->getPost('id_jenis')
-        ]);
 
-        return redirect()->to('/barang')->with('success', 'Barang berhasil diperbarui.');
+        $barang = $this->barangModel->find($id);
+        if (!$barang) {
+            return redirect()->to('/barang')->with('error', 'Barang tidak ditemukan.');
+        }
+
+        try {
+            $this->barangModel->update($id, [
+                'nama_barang'  => $this->request->getPost('nama_barang'),
+                'stok'         => $this->request->getPost('stok'),
+                'stok_minimal' => $this->request->getPost('stok_minimal'),
+                'kode_barang'  => $this->request->getPost('kode_barang'),
+                'deskripsi'    => $this->request->getPost('deskripsi'),
+                'id_satuan'    => $this->request->getPost('id_satuan'),
+                'id_jenis'     => $this->request->getPost('id_jenis')
+            ]);
+            return redirect()->to('/barang')->with('success', 'Barang berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui barang: ' . $e->getMessage());
+        }
     }
 
     public function delete($id)
     {
-        if (!$this->barangModel->find($id)) {
+        $barang = $this->barangModel->find($id);
+        if (!$barang) {
             return redirect()->to('/barang')->with('error', 'Barang tidak ditemukan.');
         }
 
-        $this->barangModel->delete($id);
-        return redirect()->to('/barang')->with('success', 'Barang berhasil dihapus.');
+        try {
+            $this->barangModel->delete($id);
+            return redirect()->to('/barang')->with('success', 'Barang berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->to('/barang')->with('error', 'Gagal menghapus barang: ' . $e->getMessage());
+        }
     }
 
-    // Generate kode barang berdasarkan jenis
     public function generateKode($idJenis)
     {
         try {
             $kodeBarang = $this->generateKodeBarang($idJenis);
             return $this->response->setJSON(['success' => true, 'kode_barang' => $kodeBarang]);
         } catch (\Exception $e) {
-            return $this->response->setJSON(['success' => false, 'message' => $e->getMessage()]);
+            return $this->response->setJSON(['success' => false, 'message' => 'Gagal menghasilkan kode barang: ' . $e->getMessage()]);
         }
     }
 
@@ -139,4 +155,18 @@ class BarangController extends Controller
 
         return $kodePrefix .'-'. sprintf('%04d', $lastNumber);
     }
+
+    public function getBarangDetail($id_barang)
+    {
+        $barangDetail = $this->barangModel->getBarangDetail($id_barang);
+
+        if (!$barangDetail) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Barang Detail tidak ditemukan']);
+        }
+
+        return $this->response->setJSON(['status' => 'success', 'data' => $barangDetail]);
+    }
+
+
+
 }

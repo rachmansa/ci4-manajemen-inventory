@@ -1,6 +1,6 @@
-<?= $this->include('layout-dashboard/head') ?>
-<?= $this->include('layout-dashboard/sidebar') ?>
-<?= $this->include('layout-dashboard/navbar') ?>
+<?= $this->include('layouts/head') ?>
+<?= $this->include('layouts/sidebar') ?>
+<?= $this->include('layouts/navbar') ?>
 
   
        
@@ -16,5 +16,5 @@
             <div class="content-backdrop fade"></div>
           </div>
           <!-- Content wrapper -->
-<?= $this->include('layout-dashboard/wrapper') ?>
-<?= $this->include('layout-dashboard/footer') ?>
+<?= $this->include('layouts/wrapper') ?>
+<?= $this->include('layouts/footer') ?>

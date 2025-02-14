@@ -1,4 +1,4 @@
-<?= $this->include('layout-dashboard/script') ?>
+<?= $this->include('layouts/script') ?>
 
 </body>
 </html>

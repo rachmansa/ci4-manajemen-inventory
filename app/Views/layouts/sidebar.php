@@ -50,23 +50,35 @@
               <span class="menu-header-text">PERSIAPAN DATA</span>
             </li>
             <li class="menu-item">
-              <a href="/satuan-barang" class="menu-link">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons fa fa-tag"></i>
-                <div data-i18n="Basic">Satuan Barang</div>
+                <div data-i18n="Layouts">Data Barang</div>
               </a>
+
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="/satuan-barang" class="menu-link">
+                    <div data-i18n="Basic">Satuan Barang</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="/jenis-barang" class="menu-link">
+                    <div data-i18n="Basic">Jenis Barang</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="/jenis-penggunaan" class="menu-link">
+                    <div data-i18n="Basic">Jenis Penggunaan</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="/posisi-barang" class="menu-link">
+                    <div data-i18n="Basic">Posisi Barang</div>
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li class="menu-item">
-              <a href="/jenis-barang" class="menu-link">
-                <i class="menu-icon tf-icons fa fa-tag"></i>
-                <div data-i18n="Basic">Jenis Barang</div>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a href="/jenis-penggunaan" class="menu-link">
-                <i class="menu-icon tf-icons fa fa-tag"></i>
-                <div data-i18n="Basic">Jenis Penggunaan</div>
-              </a>
-            </li>
+            
             <li class="menu-item">
               <a href="/lab" class="menu-link">
                 <i class="menu-icon tf-icons fa fa-house-laptop"></i>
@@ -123,7 +135,7 @@
             </li>
             <li class="menu-item">
               <a href="/barang-masuk" class="menu-link">
-                <i class="menu-icon tf-icons fa fa-building-user"></i>
+                <i class="menu-icon tf-icons fa fa-suitcase-rolling"></i>
                 <div data-i18n="Basic">Barang Pegawai Unit</div>
               </a>
             </li>

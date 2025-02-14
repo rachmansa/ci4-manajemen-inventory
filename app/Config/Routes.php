@@ -23,6 +23,14 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->post('/lab/update/(:num)', 'LabController::update/$1');
     $routes->post('/lab/delete/(:num)', 'LabController::delete/$1');
 
+    // Posisi
+    $routes->get('/posisi-barang', 'PosisiBarangController::index');
+    $routes->get('/posisi-barang/create', 'PosisiBarangController::create');
+    $routes->post('/posisi-barang/store', 'PosisiBarangController::store');
+    $routes->get('/posisi-barang/edit/(:num)', 'PosisiBarangController::edit/$1');
+    $routes->post('/posisi-barang/update/(:num)', 'PosisiBarangController::update/$1');
+    $routes->post('/posisi-barang/delete/(:num)', 'PosisiBarangController::delete/$1');
+
     // SATUAN BARANG
     $routes->get('/satuan-barang', 'SatuanBarangController::index');
     $routes->get('/satuan-barang/create', 'SatuanBarangController::create');
@@ -63,6 +71,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->post('/barang/update/(:num)', 'BarangController::update/$1');
     $routes->post('/barang/delete/(:num)', 'BarangController::delete/$1');
     $routes->get('barang/generate-kode/(:num)', 'BarangController::generateKode/$1');
+    $routes->get('barang/detail/(:num)', 'BarangController::getBarangDetail/$1');
 
     // BARANG MASUK
     $routes->get('/barang-masuk', 'BarangMasukController::index');

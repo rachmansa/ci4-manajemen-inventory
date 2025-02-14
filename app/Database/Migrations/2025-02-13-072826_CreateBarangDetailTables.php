@@ -26,16 +26,28 @@ class CreateBarangDetailTable extends Migration
                 'unique'     => true,
                 'null'       => true, // Bisa null jika barang tidak memiliki serial number
             ],
+            'id_posisi' => [
+                'type'       => 'INT',
+                'constraint' => 11
+            ],
+            'id_jenis_penggunaan' => [
+                'type'       => 'INT',
+                'constraint' => 11
+            ],
+            'nomor_bmn' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 100,
+                'null'       => true, // Bisa dikosongkan
+            ],
+            'tahun_barang' => [
+                'type'       => 'YEAR',
+                'null'       => false
+            
+            ],
             'status' => [
                 'type'       => 'ENUM',
-                'constraint' => ['tersedia', 'dipinjam', 'rusak', 'hilang'],
+                'constraint' => ['tersedia', 'terpakai','dipinjam', 'rusak', 'hilang','perbaikan'],
                 'default'    => 'tersedia',
-            ],
-            'id_barang_dipinjam' => [
-                'type'       => 'INT',
-                'constraint' => 11,
-                'unsigned'   => true,
-                'null'       => true, // Bisa NULL jika barang masih tersedia
             ],
             'created_at' => [
                 'type'    => 'DATETIME',
@@ -49,7 +61,9 @@ class CreateBarangDetailTable extends Migration
 
         $this->forge->addPrimaryKey('id_barang_detail');
         $this->forge->addForeignKey('id_barang', 'barang', 'id_barang', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_barang_dipinjam', 'barang_dipinjam', 'id_barang_dipinjam', 'CASCADE', 'SET NULL');
+        $this->forge->addForeignKey('id_posisi', 'posisi_barang', 'id_posisi', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_jenis_penggunaan', 'jenis_penggunaan', 'id_penggunaan', 'CASCADE', 'CASCADE');
+        
         $this->forge->createTable('barang_detail');
     }
 

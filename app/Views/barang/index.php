@@ -48,6 +48,11 @@
                      </td>
                      <td>
                         <a href="<?= base_url('barang/edit/' . $barang['id_barang']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                        <?php if ($barang['total_detail'] > 0) : ?>
+                        <button class="btn btn-info btn-sm btn-detail" data-id="<?= $barang['id_barang'] ?>">
+                            Lihat Detail
+                        </button>
+                    <?php endif; ?>
                         <button class="btn btn-danger btn-sm delete-btn" data-id="<?= $barang['id_barang'] ?>" data-nama="<?= $barang['nama_barang'] ?>">Hapus</button>
                      </td>
                   </tr>
@@ -58,6 +63,38 @@
       </div>
    </div>
 </div>
+
+<!-- Modal Barang Detail -->
+<div class="modal fade" id="modalBarangDetail" tabindex="-1" aria-labelledby="modalBarangDetailLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalBarangDetailLabel">Detail Barang</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="table-responsive">
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Serial Number</th>
+              <th>Nomor BMN</th>
+              <th>Posisi</th>
+              <th>Jenis Penggunaan</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="barangDetailContent">
+            <tr><td colspan="5" class="text-center">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
 
 <!-- Modal Konfirmasi Hapus -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -99,3 +136,58 @@ $(document).ready(function() {
     });
 });
 </script>
+
+<script>
+$(document).ready(function () {
+    $(".btn-detail").click(function () {
+        let id_barang = $(this).data("id");
+
+        $("#barangDetailContent").html('<tr><td colspan="5" class="text-center">Loading...</td></tr>');
+
+        $.ajax({
+            url: "<?= base_url('barang/detail/'); ?>" + id_barang,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.status === "success") {
+                    let rows = "";
+                    response.data.forEach(function (item) {
+                        rows += `
+                            <tr>
+                                <td>${item.serial_number || '-'}</td>
+                                <td>${item.nomor_bmn || '-'}</td>
+                                <td>${item.nama_posisi}</td>
+                                <td>${item.nama_penggunaan}</td>
+                                <td>${item.status}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#barangDetailContent").html(rows);
+                } else {
+                    $("#barangDetailContent").html('<tr><td colspan="5" class="text-center">Tidak ada data</td></tr>');
+                }
+            },
+            error: function () {
+                $("#barangDetailContent").html('<tr><td colspan="5" class="text-center text-danger">Gagal memuat data</td></tr>');
+            }
+        });
+
+        $("#modalBarangDetail").modal("show");
+    });
+});
+</script>
+
+<style>
+  #modalBarangDetail .modal-dialog {
+    max-width: 80%; /* Modal lebih lebar */
+  }
+
+  #modalBarangDetail .modal-body {
+    max-height: 400px; /* Batasi tinggi modal */
+    overflow-y: auto;  /* Scroll jika isi terlalu panjang */
+  }
+</style>
+
+
+

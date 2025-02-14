@@ -3,47 +3,42 @@
 namespace App\Controllers;
 
 use App\Models\BarangLabModel;
-use App\Models\BarangModel;
 use App\Models\BarangDetailModel;
+use App\Models\BarangModel; // Tambahkan untuk stok barang
 use App\Models\LabModel;
-use App\Models\JenisPenggunaanModel;
 use CodeIgniter\Controller;
 
 class BarangLabController extends Controller
 {
     protected $barangLabModel;
-    protected $barangModel;
     protected $barangDetailModel;
-    protected $labModel;
-    protected $jenisPenggunaanModel;
+    protected $barangModel; // Tambahkan model Barang
+    protected $labCatModel;
+    protected $validation;
     protected $session;
 
     public function __construct()
     {
         $this->barangLabModel = new BarangLabModel();
-        $this->barangModel = new BarangModel();
         $this->barangDetailModel = new BarangDetailModel();
-        $this->labModel = new LabModel();
-        $this->jenisPenggunaanModel = new JenisPenggunaanModel();
+        $this->barangModel = new BarangModel(); // Inisialisasi model Barang
+        $this->labCatModel = new LabModel();
+        $this->validation = \Config\Services::validation();
         $this->session = session();
     }
 
     public function index()
     {
-        $data = [
-            'title' => 'Barang Lab',
-            'barang_labs' => $this->barangLabModel->getAll()
-        ];
+        $data['barang_labs'] = $this->barangLabModel->getAll();
         return view('barang-lab/index', $data);
     }
 
     public function create()
     {
         $data = [
-            'title' => 'Tambah Barang Lab',
-            'barangs' => $this->barangModel->findAll(),
-            'labs' => $this->labModel->findAll(),
-            'jenis_penggunaan' => $this->jenisPenggunaanModel->findAll()
+            'barang_details' => $this->barangDetailModel->getAvailableForLab(), // Barang dengan id_jenis_penggunaan = 2
+            'labs'           => $this->labCatModel->findAll(),
+            'validation'     => $this->validation
         ];
         return view('barang-lab/create', $data);
     }
@@ -51,225 +46,140 @@ class BarangLabController extends Controller
     public function store()
     {
         if (!$this->validate([
-            'id_barang' => 'required|integer',
-            'id_lab' => 'required|integer',
-            'jumlah' => 'required|integer'
+            'id_barang_detail' => 'required|integer',
+            'id_lab'           => 'required|integer',
+            'nama_barang_lab'  => 'required|string|max_length[100]',
+            'kondisi'          => 'required|in_list[Baik,Rusak,Diperbaiki]'
         ])) {
-            return redirect()->back()->withInput()->with('error', 'Pastikan semua data diisi dengan benar.');
+            return redirect()->back()->withInput()->with('error', 'Harap isi semua bidang yang diperlukan.');
         }
 
-        $id_barang = $this->request->getPost('id_barang');
-        $jumlah = (int) $this->request->getPost('jumlah');
+        // Cek apakah barang_detail sudah ada di lab yang sama
+        $existing = $this->barangLabModel
+            ->where('id_barang_detail', $this->request->getPost('id_barang_detail'))
+            ->where('id_lab', $this->request->getPost('id_lab'))
+            ->first();
 
-        $barang = $this->barangModel->find($id_barang);
-        if (!$barang) {
+        if ($existing) {
+            return redirect()->back()->withInput()->with('error', 'Barang ini sudah terdaftar di Lab yang sama.');
+        }
+
+        $id_barang_detail = $this->request->getPost('id_barang_detail');
+        $barang_detail = $this->barangDetailModel->find($id_barang_detail);
+
+        if (!$barang_detail) {
             return redirect()->back()->with('error', 'Barang tidak ditemukan.');
         }
 
-        $stok_tersedia = $barang['stok'];
-        if ($jumlah > $stok_tersedia) {
-            return redirect()->back()->withInput()->with('error', 'Jumlah barang melebihi stok tersedia!');
-        }
+        $data = [
+            'id_barang_detail'      => $id_barang_detail,
+            'serial_number'         => $barang_detail['serial_number'] ?: null,
+            'nomor_bmn'             => $barang_detail['nomor_bmn'] ?: null,
+            'id_lab'                => $this->request->getPost('id_lab'),
+            'nama_barang_lab'       => $this->request->getPost('nama_barang_lab'),
+            'kondisi'               => $this->request->getPost('kondisi'),
+            'id_jenis_penggunaan'   => 2  // Lab CAT
+        ];
 
-        $id_barang_detail = $this->request->getPost('id_barang_detail') ?? [];
+        try {
+            // Update status barang_detail menjadi TERPAKAI
+            $this->barangDetailModel->update($id_barang_detail, ['status' => 'TERPAKAI']);
 
-        // Gunakan transaksi database
-        $this->barangLabModel->db->transStart();
+            // Kurangi stok barang utama
+            $this->barangModel->kurangiStok($barang_detail['id_barang']);
 
-        if (!empty($id_barang_detail)) {
-            if (count($id_barang_detail) > $stok_tersedia) {
-                return redirect()->back()->withInput()->with('error', 'Jumlah barang melebihi stok yang tersedia.');
-            }
+            // Simpan data ke barang_lab
+            $this->barangLabModel->insert($data);
 
-            foreach ($id_barang_detail as $id_detail) {
-                $barangDetail = $this->barangDetailModel->find($id_detail);
-                
-                if (!$barangDetail) {
-                    return redirect()->back()->withInput()->with('error', 'Barang dengan serial number tersebut tidak ditemukan.');
-                }
-                
-                $serialNumber = $barangDetail['serial_number'];
-
-                // **Cek apakah SN sudah ada di barang_lab**
-                $existingSN = $this->barangLabModel->where('id_barang_detail', $id_detail)->first();
-                if ($existingSN) {
-                    return redirect()->back()->withInput()->with('error', "Serial Number $serialNumber sudah ada.");
-                }
-
-                // Validasi Jika stok id_barang_detail Masih Tersedia
-                // $barangKeluar = $this->barangKeluarModel->where('id_barang_detail', $id_detail)->first();
-                // $barangDipinjam = $this->barangDipinjamModel->where('id_barang_detail', $id_detail)->first();
-
-                // if ($barangKeluar || $barangDipinjam) {
-                //     return redirect()->back()->withInput()->with('error', "Serial Number $serialNumber tidak tersedia, sudah keluar atau sedang dipinjam.");
-                // }
-
-                $this->barangLabModel->insert([
-                    'id_barang' => $id_barang,
-                    'id_barang_detail' => $id_detail,
-                    'id_lab' => $this->request->getPost('id_lab'),
-                    'id_jenis_penggunaan' => 1,
-                    'jumlah' => 1
-                ]);
-            }
-
-            $jumlah = count($id_barang_detail);
-        } else {
-            $this->barangLabModel->insert([
-                'id_barang' => $id_barang,
-                'id_barang_detail' => null,
-                'id_lab' => $this->request->getPost('id_lab'),
-                'id_jenis_penggunaan' => 1,
-                'jumlah' => $jumlah
-            ]);
-        }
-
-        $this->barangModel->update($id_barang, ['stok' => $stok_tersedia - $jumlah]);
-
-        $this->barangLabModel->db->transComplete();
-
-        if ($this->barangLabModel->db->transStatus() === false) {
+            return redirect()->to(base_url('barang-lab'))->with('success', 'Barang Lab berhasil ditambahkan.');
+        } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
         }
-
-        return redirect()->to(base_url('barang-lab'))->with('success', 'Barang Lab berhasil ditambahkan.');
     }
-
-
-
 
     public function edit($id)
     {
         $barangLab = $this->barangLabModel->find($id);
-
         if (!$barangLab) {
-            return redirect()->to(base_url('barang-lab'))->with('error', 'Data tidak ditemukan.');
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
 
         $data = [
-            'title' => 'Edit Barang Lab',
-            'barangLab' => $barangLab,
-            'barangs' => $this->barangModel->findAll(),
-            'labs' => $this->labModel->findAll(),
-            'jenis_penggunaan' => $this->jenisPenggunaanModel->findAll()
+            'barang_lab'       => $barangLab,
+            'available_barang' => $this->barangDetailModel->getAvailableForLab($barangLab['id_barang_detail']),
+            'labs'             => $this->labCatModel->findAll()
         ];
+
         return view('barang-lab/edit', $data);
     }
 
     public function update($id)
     {
         if (!$this->validate([
-            'id_barang' => 'required|integer',
-            'id_lab' => 'required|integer',
-            'jumlah' => 'required|integer'
+            'id_barang_detail' => 'required|integer',
+            'id_lab'           => 'required|integer',
+            'nama_barang_lab'  => 'required|string|max_length[100]',
+            'kondisi'          => 'required|in_list[Baik,Rusak,Diperbaiki]'
         ])) {
-            return redirect()->back()->withInput()->with('error', 'Pastikan semua data diisi dengan benar.');
+            return redirect()->back()->withInput()->with('error', 'Harap isi semua bidang yang diperlukan.');
         }
 
-        try {
-            $data = [
-                'id_barang' => $this->request->getPost('id_barang'),
-                'id_barang_detail' => $this->request->getPost('id_barang_detail') ?? null,
-                'id_lab' => $this->request->getPost('id_lab'),
-                'id_jenis_penggunaan' => $this->request->getPost('id_jenis_penggunaan'),
-                'jumlah' => $this->request->getPost('jumlah')
-            ];
+        $barangLab = $this->barangLabModel->find($id);
+        if (!$barangLab) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
 
-            $this->barangLabModel->update($id, $data);
-            return redirect()->to(base_url('barang-lab'))->with('success', 'Barang Lab berhasil diperbarui.');
+        $id_barang_detail_lama = $barangLab['id_barang_detail'];
+        $id_barang_detail_baru = $this->request->getPost('id_barang_detail');
+
+        try {
+            $this->barangLabModel->update($id, [
+                'id_barang_detail' => $id_barang_detail_baru,
+                'id_lab'           => $this->request->getPost('id_lab'),
+                'nama_barang_lab'  => $this->request->getPost('nama_barang_lab'),
+                'kondisi'          => $this->request->getPost('kondisi')
+            ]);
+
+            // Jika barang diubah, update status dan stok
+            if ($id_barang_detail_lama !== $id_barang_detail_baru) {
+                $barang_detail_lama = $this->barangDetailModel->find($id_barang_detail_lama);
+                $barang_detail_baru = $this->barangDetailModel->find($id_barang_detail_baru);
+
+                // Barang lama jadi TERSEDIA & stok bertambah
+                $this->barangDetailModel->update($id_barang_detail_lama, ['status' => 'TERSEDIA']);
+                $this->barangModel->tambahStok($barang_detail_lama['id_barang']);
+
+                // Barang baru jadi TERPAKAI & stok berkurang
+                $this->barangDetailModel->update($id_barang_detail_baru, ['status' => 'TERPAKAI']);
+                $this->barangModel->kurangiStok($barang_detail_baru['id_barang']);
+            }
+
+            return redirect()->to('/barang-lab')->with('success', 'Barang Lab berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui data.');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan, coba lagi.');
         }
     }
 
     public function delete($id)
     {
+        $barangLab = $this->barangLabModel->find($id);
+        if (!$barangLab) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+
         try {
-            $barangLab = $this->barangLabModel->find($id);
-            if (!$barangLab) {
-                return redirect()->back()->with('error', 'Barang Lab tidak ditemukan.');
-            }
-
-            $id_barang = $barangLab['id_barang'];
-            $id_barang_detail = $barangLab['id_barang_detail'];
-            $jumlah = $barangLab['jumlah'];
-
-            if ($id_barang_detail) {
-                // Jika barang memiliki serial number, kembalikan status barang_detail ke 'tersedia'
-                $this->barangDetailModel->update($id_barang_detail, ['status' => 'tersedia']);
-            } else {
-                // Jika barang tidak memiliki serial number, kembalikan stok barang
-                $barang = $this->barangModel->find($id_barang);
-                if ($barang) {
-                    $stok_terbaru = $barang['stok'] + $jumlah;
-                    $this->barangModel->update($id_barang, ['stok' => $stok_terbaru]);
-                }
-            }
-
-            // Hapus barang dari tabel barang_lab
             $this->barangLabModel->delete($id);
 
-            return redirect()->to(base_url('barang-lab'))->with('success', 'Barang Lab berhasil dihapus.');
+            // Kembalikan status barang_detail jadi TERSEDIA
+            $this->barangDetailModel->update($barangLab['id_barang_detail'], ['status' => 'TERSEDIA']);
+
+            // Tambahkan stok barang utama
+            $barang_detail = $this->barangDetailModel->find($barangLab['id_barang_detail']);
+            $this->barangModel->tambahStok($barang_detail['id_barang']);
+
+            return redirect()->to('/barang-lab')->with('success', 'Barang Lab berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
     }
-
-
-    public function getSerials($id_barang)
-    {
-        $barangDetailModel = new BarangDetailModel();
-        
-        // Ambil daftar serial number barang berdasarkan id_barang
-        $serials = $barangDetailModel->where('id_barang', $id_barang)
-                                    ->where('status', 'tersedia') // Ambil yang belum dipakai
-                                    ->findAll();
-
-        // Jika tidak ada serial number, kembalikan array kosong
-        return $this->response->setJSON($serials);
-    }
-
-    public function getStok()
-    {
-        $id_barang = $this->request->getPost('id_barang');
-
-        $barang = $this->barangModel->find($id_barang);
-        if (!$barang) {
-            return $this->response->setJSON(['error' => 'Barang tidak ditemukan.']);
-        }
-
-        $stok_tersedia = $barang['stok'];
-
-        return $this->response->setJSON(['stok' => $stok_tersedia]);
-    }
-
-    public function getBarangInfo()
-    {
-        $id_barang = $this->request->getPost('id_barang');
-
-        $barang = $this->barangModel->find($id_barang);
-        if (!$barang) {
-            return $this->response->setJSON(['error' => 'Barang tidak ditemukan.']);
-        }
-
-        // Cek apakah barang punya serial number
-        $barangDetail = $this->barangDetailModel->where('id_barang', $id_barang)->findAll();
-        $serialNumbers = [];
-
-        if (!empty($barangDetail)) {
-            foreach ($barangDetail as $detail) {
-                $serialNumbers[] = [
-                    'id_barang_detail' => $detail['id_barang_detail'],
-                    'serial_number' => $detail['serial_number']
-                ];
-            }
-        }
-
-        return $this->response->setJSON([
-            'stok' => $barang['stok'],
-            'serialNumbers' => $serialNumbers
-        ]);
-    }
-
-
 }

@@ -34,7 +34,7 @@
                <div class="row mb-3">
                   <label class="col-sm-2 col-form-label" for="unit_kerja">Unit Kerja</label>
                   <div class="col-sm-10">
-                     <input type="text" class="form-control" name="unit_kerja" id="unit_kerja" value="<?= set_value('unit_kerja') ?>">
+                     <input type="text" class="form-control" name="unit_kerja" id="unit_kerja" value="Pusat Pengembangan Sistem Rekrutment" readonly>
                      <?php if (isset($validation) && $validation->hasError('unit_kerja')) : ?>
                      <div class="text-danger"><?= $validation->getError('unit_kerja') ?></div>
                      <?php endif; ?>
