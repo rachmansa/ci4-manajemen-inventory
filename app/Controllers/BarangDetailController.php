@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\BarangDetailModel;
 use App\Models\BarangModel;
-use App\Models\PosisiBarangModel;
 use App\Models\JenisPenggunaanModel;
 use App\Models\BarangLabModel;
 use CodeIgniter\Controller;
@@ -15,7 +14,6 @@ class BarangDetailController extends Controller
     protected $barangDetailModel;
     protected $barangModel;
     protected $barangLabModel;
-    protected $posisiBarangModel;
     protected $jenisPenggunaanModel;
     protected $session;
     protected $db;
@@ -24,7 +22,6 @@ class BarangDetailController extends Controller
     {
         $this->barangDetailModel = new BarangDetailModel();
         $this->barangModel = new BarangModel();
-        $this->posisiBarangModel = new PosisiBarangModel();
         $this->jenisPenggunaanModel = new JenisPenggunaanModel();
         $this->barangLabModel = new BarangLabModel();
         $this->session = session();
@@ -46,9 +43,8 @@ class BarangDetailController extends Controller
     public function index()
     {
         $barang_details = $this->barangDetailModel
-            ->select('barang_detail.*, barang.nama_barang, posisi_barang.nama_posisi, jenis_penggunaan.nama_penggunaan')
+            ->select('barang_detail.*, barang.nama_barang, jenis_penggunaan.nama_penggunaan')
             ->join('barang', 'barang.id_barang = barang_detail.id_barang')
-            ->join('posisi_barang', 'posisi_barang.id_posisi = barang_detail.id_posisi')
             ->join('jenis_penggunaan', 'jenis_penggunaan.id_penggunaan = barang_detail.id_jenis_penggunaan')
             ->findAll();
 
@@ -62,7 +58,6 @@ class BarangDetailController extends Controller
     public function create()
     {
         $data['barangs'] = $this->barangModel->getAvailableBarangForDetail();
-        $data['posisi'] = $this->posisiBarangModel->findAll();
         $data['jenis_penggunaan'] = $this->jenisPenggunaanModel->findAll();
 
         return view('barang-detail/create', $data);
@@ -92,7 +87,7 @@ class BarangDetailController extends Controller
         // Validasi input
         if (!$this->validate([
             'id_barang' => 'required',
-            'id_posisi' => 'required',
+            'posisi_barang' => 'required',
             'id_jenis_penggunaan' => 'required',
             'tahun_barang' => 'required',
             'serial_number' => 'permit_empty|is_unique[barang_detail.serial_number]',
@@ -105,7 +100,7 @@ class BarangDetailController extends Controller
         // Simpan Barang Detail
         $this->barangDetailModel->insert([
             'id_barang' => $idBarang,
-            'id_posisi' => $this->request->getPost('id_posisi'),
+            'posisi_barang' => $this->request->getPost('posisi_barang'),
             'id_jenis_penggunaan' => $this->request->getPost('id_jenis_penggunaan'),
             'serial_number' => $this->request->getPost('serial_number') ?: null,
             'nomor_bmn' => $this->request->getPost('nomor_bmn'),
@@ -127,7 +122,6 @@ class BarangDetailController extends Controller
         $data = [
             'barang_detail' => $barang_detail,
             'barangs' => $this->barangModel->findAll(),
-            'posisi' => $this->posisiBarangModel->findAll(),
             'jenisPenggunaan' => $this->jenisPenggunaanModel->findAll(),
         ];
 
@@ -145,20 +139,37 @@ class BarangDetailController extends Controller
         // Validasi input
         if (!$this->validate([
             'id_barang' => 'required',
-            'id_posisi' => 'required',
+            'posisi_barang' => 'required',
             'id_jenis_penggunaan' => 'required',
             'tahun_barang' => 'required',
-            'serial_number' => 'permit_empty|is_unique[barang_detail.serial_number,id_barang_detail,' . $id . ']',
-            'nomor_bmn' => 'is_unique[barang_detail.nomor_bmn,id_barang_detail,' . $id . ']|max_length[100]',
             'status' => 'required|in_list[tersedia,terpakai,dipinjam,rusak,hilang]',
         ])) {
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data. Pastikan semua input benar dan Nomor BMN serta Serial Number tidak duplikat.');
         }
 
+        $existingSerial = $this->barangDetailModel
+            ->where('serial_number', $this->request->getPost('serial_number'))
+            ->where('id_barang_detail !=', $id)
+            ->first();
+
+        $existingBMN = $this->barangDetailModel
+            ->where('nomor_bmn', $this->request->getPost('nomor_bmn'))
+            ->where('id_barang_detail !=', $id)
+            ->first();
+
+        if ($existingSerial) {
+            return redirect()->back()->withInput()->with('error', 'Serial Number sudah digunakan.');
+        }
+
+        if ($existingBMN) {
+            return redirect()->back()->withInput()->with('error', 'Nomor BMN sudah digunakan.');
+        }
+
+
         try {
             $this->barangDetailModel->update($id, [
                 'id_barang' => $this->request->getPost('id_barang'),
-                'id_posisi' => $this->request->getPost('id_posisi'),
+                'posisi_barang' => $this->request->getPost('posisi_barang'),
                 'id_jenis_penggunaan' => $this->request->getPost('id_jenis_penggunaan'),
                 'serial_number' => $this->request->getPost('serial_number') ?: null,
                 'nomor_bmn' => $this->request->getPost('nomor_bmn'),

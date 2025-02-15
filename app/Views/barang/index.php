@@ -156,7 +156,7 @@ $(document).ready(function () {
                             <tr>
                                 <td>${item.serial_number || '-'}</td>
                                 <td>${item.nomor_bmn || '-'}</td>
-                                <td>${item.nama_posisi}</td>
+                                <td>${item.posisi_barang}</td>
                                 <td>${item.nama_penggunaan}</td>
                                 <td>${item.status}</td>
                             </tr>

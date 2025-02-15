@@ -40,7 +40,7 @@
                      </td>
                      <td><?= $barang_detail['nama_penggunaan'] ?></td>
                      <td><?= $barang_detail['tahun_barang'] ?></td>
-                     <td><?= $barang_detail['nama_posisi'] ?></td>
+                     <td><?= $barang_detail['posisi_barang'] ?></td>
                      <td>
                         <span class="badge bg-<?= $barang_detail['status_class'] ?>">
                             <?= ucfirst($barang_detail['status']) ?>

@@ -45,11 +45,10 @@ class BarangModel extends Model
     public function getBarangDetail($id_barang)
     {
         return $this->db->table('barang_detail')
-            ->select('barang_detail.*, barang.nama_barang, satuan_barang.nama_satuan, jenis_barang.nama_jenis, posisi_barang.nama_posisi, jenis_penggunaan.nama_penggunaan')
+            ->select('barang_detail.*, barang.nama_barang, satuan_barang.nama_satuan, jenis_barang.nama_jenis, jenis_penggunaan.nama_penggunaan')
             ->join('barang', 'barang.id_barang = barang_detail.id_barang')
             ->join('satuan_barang', 'satuan_barang.id_satuan = barang.id_satuan', 'left')
             ->join('jenis_barang', 'jenis_barang.id_jenis = barang.id_jenis', 'left')
-            ->join('posisi_barang', 'posisi_barang.id_posisi = barang_detail.id_posisi', 'left')
             ->join('jenis_penggunaan', 'jenis_penggunaan.id_penggunaan = barang_detail.id_jenis_penggunaan', 'left')
             ->where('barang_detail.id_barang', $id_barang)
             ->get()

@@ -26,9 +26,9 @@ class CreateBarangDetailTable extends Migration
                 'unique'     => true,
                 'null'       => true, // Bisa null jika barang tidak memiliki serial number
             ],
-            'id_posisi' => [
-                'type'       => 'INT',
-                'constraint' => 11
+            'posisi_barang' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255
             ],
             'id_jenis_penggunaan' => [
                 'type'       => 'INT',

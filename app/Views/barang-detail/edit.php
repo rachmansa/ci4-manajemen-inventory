@@ -28,6 +28,7 @@
                      </option>
                      <?php endforeach; ?>
                   </select>
+                  <input type="hidden" name="id_barang" value="<?= $barang_detail['id_barang'] ?>">
                </div>
                <div class="mb-3">
                   <label for="nomor_bmn" class="form-label">Nomor BMN</label>
@@ -56,15 +57,8 @@
                   </select>
                </div>
                <div class="mb-3">
-                  <label for="id_posisi" class="form-label">Posisi Barang</label>
-                  <select name="id_posisi" id="id_posisi" class="form-select" required>
-                     <option value="">-- Pilih Posisi --</option>
-                     <?php foreach ($posisi as $p) : ?>
-                     <option value="<?= $p['id_posisi'] ?>" <?= $barang_detail['id_posisi'] == $p['id_posisi'] ? 'selected' : '' ?>>
-                        <?= $p['nama_posisi'] ?>
-                     </option>
-                     <?php endforeach; ?>
-                  </select>
+                  <label for="posisi_barang" class="form-label">Posisi Barang</label>
+                  <input type="text" name="posisi_barang" id="posisi_barang" class="form-control" value="<?= $barang_detail['posisi_barang'] ?>">
                </div>
                <div class="mb-3">
                   <label for="status" class="form-label">Status</label>
