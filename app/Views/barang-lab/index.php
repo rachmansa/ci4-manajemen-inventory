@@ -37,7 +37,11 @@
                         <br> 
                         <small>Serial Number : <?= !empty($barang_lab['serial_number']) ? $barang_lab['serial_number'] : "-" ?></small>
                      </td>
-                     <td><?= $barang_lab['nama_lab'] ?></td>
+                     <td>
+                        <?= $barang_lab['nama_lab'] ?>
+                        <br>
+                        <small>Jumlah : <?= $barang_lab['jumlah']?> </small>
+                     </td>
                      <td><?= $barang_lab['nama_barang_lab'] ?></td>
                      <td>
                         <span class="badge bg-<?= $barang_lab['kondisi'] == 'Baik' ? 'success' : ($barang_lab['kondisi'] == 'Rusak' ? 'danger' : 'warning') ?>">

@@ -8,7 +8,7 @@ class BarangLabModel extends Model
 {
     protected $table            = 'barang_lab';
     protected $primaryKey       = 'id_barang_lab';
-    protected $allowedFields    = ['id_barang_detail', 'serial_number','nomor_bmn','id_lab', 'nama_barang_lab', 'kondisi', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_barang_detail', 'serial_number','nomor_bmn','id_lab', 'nama_barang_lab', 'kondisi','jumlah', 'created_at', 'updated_at'];
     protected $useTimestamps    = true;
 
     public function getAll()

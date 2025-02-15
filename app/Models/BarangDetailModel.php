@@ -61,4 +61,13 @@ class BarangDetailModel extends Model
         return $formattedBarang;
     }
 
+    public function getDetailWithBarang($id_barang_detail)
+    {
+        return $this->select('barang_detail.*, barang.nama_barang, barang.stok')
+            ->join('barang', 'barang.id_barang = barang_detail.id_barang')
+            ->where('barang_detail.id_barang_detail', $id_barang_detail)
+            ->first();
+    }
+
+
 }

@@ -8,7 +8,7 @@
             <div class="card-header">
                 <h5>Tambah Barang Lab</h5>
             </div>
-            
+
             <div class="card-body">
                 <?php if (session()->getFlashdata('error')) : ?>
                     <div class="alert alert-danger">
@@ -53,15 +53,22 @@
                         <select class="form-select" name="id_lab" required>
                             <option value="">-- Pilih Lab --</option>
                             <?php foreach ($labs as $lab) : ?>
-                                <option value="<?= $lab['id_lab'] ?>"><?= $lab['nama_lab'] ?></option>
+                                <option value="<?= $lab['id_lab'] ?>" <?= old('id_lab') == $lab['id_lab'] ? 'selected' : '' ?>>
+                                    <?= $lab['nama_lab'] ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label for="nama_barang_lab" class="form-label">Nama Barang Lab</label>
-                        <p><small>Format Nama : (Nama Barang)-(Kode/Nomor)</small></p>
-                        <input type="text" class="form-control" name="nama_barang_lab" required>
+                        <p><small>Misal Format Nama: (Nama Barang)-(Kode/Nomor)</small></p>
+                        <input type="text" class="form-control" name="nama_barang_lab" value="<?= old('nama_barang_lab') ?>" required>
+                    </div>
+
+                    <div class="mb-3" id="jumlah_section" >
+                        <label for="jumlah" class="form-label">Jumlah</label>
+                        <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" value="1">
                     </div>
 
                     <div class="mb-3">
@@ -92,9 +99,19 @@
             let selectedOption = $(this).find(':selected');
             let serialNumber = selectedOption.data('serial');
             let nomorBMN = selectedOption.data('bmn');
+            let jumlahSection = $('#jumlah_section');
+            let jumlahInput = $('#jumlah');
 
             $('#serial_number').val(serialNumber ? serialNumber : ''); 
             $('#nomor_bmn').val(nomorBMN ? nomorBMN : ''); 
+
+            if (!serialNumber && !nomorBMN) {
+                jumlahSection.show();
+                jumlahInput.val('');
+            } else {
+                jumlahSection.show();
+                jumlahInput.val(1);
+            }
         });
     });
 </script>

@@ -19,31 +19,35 @@
 
             <form action="<?= base_url('barang-lab/update/' . $barang_lab['id_barang_lab']) ?>" method="post">
                <?= csrf_field() ?>
+
                <div class="mb-3">
-                  <label for="id_barang_detail" class="form-label">Nama Barang</label>
-                  <select name="id_barang_detail" id="id_barang_detail" class="form-select" required>
-                     <option value="">-- Pilih Barang --</option>
-                     <?php foreach ($available_barang as $barang) : ?>
-                     <option value="<?= $barang['id_barang_detail'] ?>" 
-                        <?= old('id_barang_detail', $barang_lab['id_barang_detail']) == $barang['id_barang_detail'] ? 'selected' : '' ?>>
-                        <?= $barang['nama_barang'] ?> 
-                        <?= $barang['serial_number'] ? " - ($barang[serial_number])" : ($barang['nomor_bmn'] ? " - ($barang[nomor_bmn])" : '') ?>
-                     </option>
-                     <?php endforeach; ?>
-                  </select>
+                  <label class="form-label">Nama Barang</label>
+                  <input type="text" class="form-control" 
+                     value="<?= $barang_detail['nama_barang'] ?>" readonly>
                </div>
 
                <div class="mb-3">
                   <label for="serial_number" class="form-label">Serial Number</label>
                   <input type="text" id="serial_number" class="form-control" 
-                     value="<?= $barang_lab['serial_number'] ?>" readonly>
+                     value="<?= $barang_detail['serial_number'] ?>" readonly>
                </div>
 
                <div class="mb-3">
                   <label for="nomor_bmn" class="form-label">Nomor BMN</label>
                   <input type="text" id="nomor_bmn" class="form-control" 
-                     value="<?= $barang_lab['nomor_bmn'] ?>" readonly>
+                     value="<?= $barang_detail['nomor_bmn'] ?>" readonly>
                </div>
+
+               <div class="mb-3">
+                  <label for="jumlah" class="form-label">Jumlah</label>
+                  <input type="number" name="jumlah" id="jumlah" class="form-control"
+                     value="<?= old('jumlah', $barang_lab['jumlah']) ?>"
+                     min="1"
+                     max="<?= $stok_tersedia ?>"
+                     <?= ($barang_detail['serial_number'] || $barang_detail['nomor_bmn']) ? 'readonly' : '' ?>>
+                  <small class="text-muted">Maksimal: <?= $stok_tersedia ?></small>
+               </div>
+
 
                <div class="mb-3">
                   <label for="id_lab" class="form-label">Lab</label>
@@ -85,29 +89,3 @@
 
 <?= $this->include('layouts/wrapper') ?>
 <?= $this->include('layouts/footer') ?>
-
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-       const id_barang_detail = document.getElementById("id_barang_detail");
-       const serial_number = document.getElementById("serial_number");
-       const nomor_bmn = document.getElementById("nomor_bmn");
-
-       id_barang_detail.addEventListener("change", function () {
-           const selectedOption = this.options[this.selectedIndex];
-           const text = selectedOption.textContent;
-           const matchSN = text.match(/\((.*?)\)/);
-
-           serial_number.value = "";
-           nomor_bmn.value = "";
-
-           if (matchSN) {
-               const snOrBmn = matchSN[1];
-               if (!isNaN(snOrBmn)) {
-                   nomor_bmn.value = snOrBmn;
-               } else {
-                   serial_number.value = snOrBmn;
-               }
-           }
-       });
-   });
-</script>
