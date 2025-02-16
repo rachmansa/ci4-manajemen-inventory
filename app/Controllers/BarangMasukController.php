@@ -12,6 +12,7 @@ class BarangMasukController extends Controller
     protected $barangMasukModel;
     protected $barangModel;
     protected $jenisPenggunaanModel;
+    protected $validation;
     protected $session;
 
     public function __construct()
@@ -19,18 +20,13 @@ class BarangMasukController extends Controller
         $this->barangMasukModel = new BarangMasukModel();
         $this->barangModel = new BarangModel();
         $this->jenisPenggunaanModel = new JenisPenggunaanModel();
+        $this->validation = \Config\Services::validation();
         $this->session = session();
     }
 
     public function index()
     {
-        $data = [
-            'barangmasuks' => $this->barangMasukModel->select('barang_masuk.*, barang.nama_barang as nama_barang, jenis_penggunaan.nama_penggunaan as nama_penggunaan')
-                ->join('barang', 'barang.id_barang = barang_masuk.id_barang')
-                ->join('jenis_penggunaan', 'jenis_penggunaan.id_penggunaan = barang_masuk.id_jenis_penggunaan')
-                ->findAll()
-        ];
-
+        $data['barang_masuk'] = $this->barangMasukModel->getAll();
         return view('barang-masuk/index', $data);
     }
 
@@ -38,69 +34,64 @@ class BarangMasukController extends Controller
     {
         $data = [
             'barang' => $this->barangModel->findAll(),
-            'jenis_penggunaan' => $this->jenisPenggunaanModel->findAll()
+            'jenis_penggunaan' => $this->jenisPenggunaanModel->findAll(),
+            'validation' => $this->validation
         ];
-
         return view('barang-masuk/create', $data);
     }
 
     public function store()
     {
-        if ($this->request->getMethod() === 'post') {
-            $validation = \Config\Services::validation();
-            $validation->setRules([
-                'id_barang' => 'required|numeric',
-                'id_jenis_penggunaan' => 'required|numeric',
-                'jumlah' => 'required|numeric|min_length[1]',
-                'tanggal_masuk' => 'required|valid_date'
-            ]);
+        if (!$this->validate([
+            'id_barang' => 'required|integer',
+            'id_jenis_penggunaan' => 'required|integer',
+            'jumlah' => 'required|integer|greater_than[0]',
+            'tanggal_masuk' => 'required|valid_date'
+        ])) {
+            return redirect()->back()->withInput()->with('error', 'Harap isi semua bidang yang diperlukan.');
+        }
 
-            if (!$validation->withRequest($this->request)->run()) {
-                return redirect()->back()->withInput()->with('error', 'Data tidak valid!');
-            }
+        $id_barang = $this->request->getPost('id_barang');
+        $jumlah = (int) $this->request->getPost('jumlah');
+        $id_jenis_penggunaan = $this->request->getPost('id_jenis_penggunaan');
+        $tanggal_masuk = $this->request->getPost('tanggal_masuk');
 
-            $data = [
-                'id_barang' => $this->request->getPost('id_barang'),
-                'id_jenis_penggunaan' => $this->request->getPost('id_jenis_penggunaan'),
-                'jumlah' => $this->request->getPost('jumlah'),
-                'tanggal_masuk' => $this->request->getPost('tanggal_masuk')
-            ];
+        $data = $this->request->getPost();
 
-            try {
-                // Insert ke tabel barang_masuk
-                $this->barangMasukModel->insert($data);
+        // Ambil tanggal hari ini
+        $tanggal_sekarang = date('Y-m-d');
 
-                // Ambil stok saat ini dari tabel barang
-                $barang = $this->barangModel->find($data['id_barang']);
-                if ($barang) {
-                    $stok_baru = $barang['stok'] + $data['jumlah'];
+        // Validasi tanggal masuk tidak boleh lebih dari hari ini
+        if ($data['tanggal_masuk'] > $tanggal_sekarang) {
+            return redirect()->back()->withInput()->with('error', 'Tanggal masuk tidak boleh lebih dari hari ini.');
+        }
 
-                    // Update stok barang
-                    $this->barangModel->update($data['id_barang'], ['stok' => $stok_baru]);
-                }
+        try {
+            // Simpan ke database
+            $this->barangMasukModel->insertBarangMasuk($id_barang, $id_jenis_penggunaan, $jumlah, $tanggal_masuk);
 
-                return redirect()->to('/barang-masuk')->with('success', 'Barang masuk berhasil ditambahkan dan stok diperbarui.');
-            } catch (\Exception $e) {
-                return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-            }
+            // Tambah stok barang
+            $this->barangModel->tambahStok($id_barang, $jumlah);
+
+            return redirect()->to('/barang-masuk')->with('success', 'Barang masuk berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
         }
     }
-
 
     public function edit($id)
     {
         $barangMasuk = $this->barangMasukModel->find($id);
-
         if (!$barangMasuk) {
-            return redirect()->to('/barang-masuk')->with('error', 'Data tidak ditemukan!');
+            return redirect()->to('/barang-masuk')->with('error', 'Data tidak ditemukan.');
         }
 
         $data = [
             'barang_masuk' => $barangMasuk,
             'barang' => $this->barangModel->findAll(),
-            'jenis_penggunaan' => $this->jenisPenggunaanModel->findAll()
+            'jenis_penggunaan' => $this->jenisPenggunaanModel->findAll(),
+            'validation' => $this->validation
         ];
-
         return view('barang-masuk/edit', $data);
     }
 
@@ -109,35 +100,72 @@ class BarangMasukController extends Controller
         if (!$this->validate([
             'id_barang' => 'required|integer',
             'id_jenis_penggunaan' => 'required|integer',
-            'jumlah' => 'required|integer|min_length[1]',
-            'tanggal_masuk' => 'required|valid_date',
-            'keterangan' => 'permit_empty|max_length[255]'
+            'jumlah' => 'required|integer|greater_than[0]',
+            'tanggal_masuk' => 'required|valid_date'
         ])) {
-            return redirect()->back()->withInput()->with('error', 'Data tidak valid!');
+            return redirect()->back()->withInput()->with('error', 'Harap isi semua bidang yang diperlukan.');
+        }
+
+        $barangMasuk = $this->barangMasukModel->find($id);
+        if (!$barangMasuk) {
+            return redirect()->to('/barang-masuk')->with('error', 'Data tidak ditemukan.');
+        }
+
+        $id_barang = $this->request->getPost('id_barang');
+        $jumlah_baru = (int) $this->request->getPost('jumlah');
+        $id_jenis_penggunaan = $this->request->getPost('id_jenis_penggunaan');
+        $tanggal_masuk = $this->request->getPost('tanggal_masuk');
+
+        $jumlah_lama = $barangMasuk['jumlah'];
+        $selisih = $jumlah_baru - $jumlah_lama;
+
+        $data = $this->request->getPost();
+
+        // Ambil tanggal hari ini
+        $tanggal_sekarang = date('Y-m-d');
+
+        // Validasi tanggal masuk tidak boleh lebih dari hari ini
+        if ($data['tanggal_masuk'] > $tanggal_sekarang) {
+            return redirect()->back()->withInput()->with('error', 'Tanggal masuk tidak boleh lebih dari hari ini.');
         }
 
         try {
-            $this->barangMasukModel->update($id, [
-                'id_barang' => $this->request->getPost('id_barang'),
-                'id_jenis_penggunaan' => $this->request->getPost('id_jenis_penggunaan'),
-                'jumlah' => $this->request->getPost('jumlah'),
-                'tanggal_masuk' => $this->request->getPost('tanggal_masuk'),
-                'keterangan' => $this->request->getPost('keterangan')
-            ]);
+            // Update data barang masuk
+            $this->barangMasukModel->updateBarangMasuk($id, $id_barang, $id_jenis_penggunaan, $jumlah_baru, $tanggal_masuk);
 
-            return redirect()->to('/barang-masuk')->with('success', 'Barang masuk berhasil diperbarui!');
+            // Perbarui stok barang berdasarkan perubahan jumlah
+            if ($selisih > 0) {
+                $this->barangModel->tambahStok($id_barang, $selisih);
+            } elseif ($selisih < 0) {
+                $this->barangModel->kurangiStok($id_barang, abs($selisih));
+            }
+
+            return redirect()->to('/barang-masuk')->with('success', 'Barang masuk berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan!');
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui data.');
         }
     }
 
     public function delete($id)
     {
+        $barangMasuk = $this->barangMasukModel->find($id);
+        if (!$barangMasuk) {
+            return redirect()->to('/barang-masuk')->with('error', 'Data tidak ditemukan.');
+        }
+
+        $id_barang = $barangMasuk['id_barang'];
+        $jumlah = $barangMasuk['jumlah'];
+
         try {
-            $this->barangMasukModel->delete($id);
-            return redirect()->to('/barang-masuk')->with('success', 'Barang masuk berhasil dihapus!');
+            // Hapus data barang masuk
+            $this->barangMasukModel->deleteBarangMasuk($id);
+
+            // Kurangi stok barang
+            $this->barangModel->kurangiStok($id_barang, $jumlah);
+
+            return redirect()->to('/barang-masuk')->with('success', 'Barang masuk berhasil dihapus.');
         } catch (\Exception $e) {
-            return redirect()->to('/barang-masuk')->with('error', 'Terjadi kesalahan!');
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
     }
 }

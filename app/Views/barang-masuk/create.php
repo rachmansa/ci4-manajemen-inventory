@@ -12,6 +12,12 @@
             <h5 class="mb-0">Form Tambah Barang Masuk</h5>
          </div>
          <div class="card-body">
+         <?php if (session()->getFlashdata('error')) : ?>
+            <div class="alert alert-danger">
+               <?= session()->getFlashdata('error') ?>
+            </div>
+         <?php endif; ?>
+
             <form action="<?= base_url('barang-masuk/store') ?>" method="post">
                <?= csrf_field() ?>
 
