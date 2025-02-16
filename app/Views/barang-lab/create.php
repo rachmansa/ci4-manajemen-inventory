@@ -20,7 +20,7 @@
                     <?= csrf_field() ?>
 
                     <div class="mb-3">
-                        <label for="id_barang_detail" class="form-label">Nama Barang</label>
+                        <label for="id_barang_detail" class="form-label">Nama Barang Detail</label>
                         <select name="id_barang_detail" id="id_barang_detail" class="form-select" required>
                             <option value="">-- Pilih Barang --</option>
                             <?php foreach ($barang_details as $barang) : ?>
@@ -76,7 +76,7 @@
                         <select class="form-select" name="kondisi" required>
                             <option value="Baik" <?= old('kondisi') == 'Baik' ? 'selected' : '' ?>>Baik</option>
                             <option value="Rusak" <?= old('kondisi') == 'Rusak' ? 'selected' : '' ?>>Rusak</option>
-                            <option value="Diperbaiki" <?= old('kondisi') == 'Diperbaiki' ? 'selected' : '' ?>>Diperbaiki</option>
+                            <option value="Hilang" <?= old('kondisi') == 'Hilang' ? 'selected' : '' ?>>Hilang</option>
                         </select>
                     </div>
 

@@ -44,7 +44,7 @@
                      </td>
                      <td><?= $barang_lab['nama_barang_lab'] ?></td>
                      <td>
-                        <span class="badge bg-<?= $barang_lab['kondisi'] == 'Baik' ? 'success' : ($barang_lab['kondisi'] == 'Rusak' ? 'danger' : 'warning') ?>">
+                        <span class="badge bg-<?= $barang_lab['kondisi'] == 'Baik' ? 'success' : ($barang_lab['kondisi'] == 'Rusak' ? 'danger' : 'dark') ?>">
                             <?= ucfirst($barang_lab['kondisi']) ?>
                         </span>
                      </td>

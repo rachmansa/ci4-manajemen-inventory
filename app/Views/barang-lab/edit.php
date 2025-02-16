@@ -75,7 +75,7 @@
                   <select name="kondisi" id="kondisi" class="form-select" required>
                      <option value="Baik" <?= old('kondisi', $barang_lab['kondisi']) == 'Baik' ? 'selected' : '' ?>>Baik</option>
                      <option value="Rusak" <?= old('kondisi', $barang_lab['kondisi']) == 'Rusak' ? 'selected' : '' ?>>Rusak</option>
-                     <option value="Diperbaiki" <?= old('kondisi', $barang_lab['kondisi']) == 'Diperbaiki' ? 'selected' : '' ?>>Diperbaiki</option>
+                     <option value="Hilang" <?= old('kondisi', $barang_lab['kondisi']) == 'Hilang' ? 'selected' : '' ?>>Hilang</option>
                   </select>
                </div>
 

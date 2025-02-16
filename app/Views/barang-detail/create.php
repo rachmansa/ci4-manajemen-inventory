@@ -64,8 +64,16 @@
                      <option value="tersedia" <?= old('status') == 'tersedia' ? 'selected' : '' ?>>Tersedia</option>
                      <option value="terpakai" <?= old('status') == 'terpakai' ? 'selected' : '' ?>>Terpakai</option>
                      <option value="dipinjam" <?= old('status') == 'dipinjam' ? 'selected' : '' ?>>Dipinjam</option>
-                     <option value="rusak" <?= old('status') == 'rusak' ? 'selected' : '' ?>>Rusak</option>
+                     <option value="menunggu diperbaiki" <?= old('status') == 'diperbaiki' ? 'selected' : '' ?>>Menunggu Diperbaiki</option>
                      <option value="hilang" <?= old('status') == 'hilang' ? 'selected' : '' ?>>Hilang</option>
+                  </select>
+               </div>
+               <div class="mb-3">
+                  <label for="kondisi" class="form-label">Kondisi</label>
+                  <select name="kondisi" id="kondisi" class="form-select" required>
+                     <option value="baik" <?= old('kondisi') == 'baik' ? 'selected' : '' ?>>Baik</option>
+                     <option value="rusak" <?= old('kondisi') == 'rusak' ? 'selected' : '' ?>>Rusak</option>
+                     <option value="hilang" <?= old('kondisi') == 'hilang' ? 'selected' : '' ?>>Hilang</option>
                   </select>
                </div>
                <div class="text-end">

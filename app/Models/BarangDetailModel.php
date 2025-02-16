@@ -8,7 +8,7 @@ class BarangDetailModel extends Model
 {
     protected $table            = 'barang_detail';
     protected $primaryKey       = 'id_barang_detail';
-    protected $allowedFields    = ['id_barang', 'serial_number','posisi_barang', 'id_jenis_penggunaan','nomor_bmn', 'tahun_barang','status', 'id_barang_dipinjam', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_barang', 'serial_number','posisi_barang', 'id_jenis_penggunaan','nomor_bmn', 'tahun_barang','status', 'kondisi','id_barang_dipinjam', 'created_at', 'updated_at'];
     protected $useTimestamps    = true;
 
     public function getBarangDetail($id = null)

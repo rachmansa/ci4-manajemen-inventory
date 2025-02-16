@@ -49,7 +49,7 @@ class BarangLabController extends Controller
             'id_barang_detail' => 'required|integer',
             'id_lab'           => 'required|integer',
             'nama_barang_lab'  => 'required|string|max_length[100]',
-            'kondisi'          => 'required|in_list[Baik,Rusak,Diperbaiki]',
+            'kondisi'          => 'required|in_list[Baik,Rusak,Hilang]',
             'jumlah'           => 'if_exist|integer|greater_than[0]'
         ])) {
             return redirect()->back()->withInput()->with('error', 'Harap isi semua bidang yang diperlukan.');
@@ -60,6 +60,7 @@ class BarangLabController extends Controller
         $barang = $this->barangModel->find($barang_detail['id_barang']);
         $jumlah = (int) $this->request->getPost('jumlah') ?: 1;
         $lab = $this->labCatModel->find($this->request->getPost('id_lab'));
+        $kondisiLab = $this->request->getPost('kondisi');
 
         if (!$barang_detail || !$barang || !$lab) {
             return redirect()->back()->with('error', 'Data tidak ditemukan.');
@@ -90,6 +91,20 @@ class BarangLabController extends Controller
 
             // Kurangi stok barang utama
             $this->barangModel->kurangiStok($barang_detail['id_barang'], $jumlah);
+
+            // Update status dan kondisi barang_detail berdasarkan kondisi di Barang Lab
+            if ($kondisiLab == 'Rusak') {
+                $this->barangDetailModel->update($id_barang_detail, [
+                    'status'  => 'Menunggu Diperbaiki',
+                    'kondisi' => 'Rusak'
+                ]);
+            } elseif ($kondisiLab == 'Hilang') {
+                $this->barangDetailModel->update($id_barang_detail, [
+                    'status'  => 'Hilang',
+                    'kondisi' => 'Hilang'
+                ]);
+            }
+
 
             // Simpan data ke barang_lab
             $this->barangLabModel->insert($data);
@@ -129,7 +144,7 @@ class BarangLabController extends Controller
         if (!$this->validate([
             'id_lab'           => 'required|integer',
             'nama_barang_lab'  => 'required|string|max_length[100]',
-            'kondisi'          => 'required|in_list[Baik,Rusak,Diperbaiki]',
+            'kondisi'          => 'required|in_list[Baik,Rusak,Hilang]',
             'jumlah'           => 'if_exist|integer|greater_than[0]'
         ])) {
             return redirect()->back()->withInput()->with('error', 'Harap isi semua bidang yang diperlukan.');
@@ -183,6 +198,30 @@ class BarangLabController extends Controller
                 ]);
             }
 
+            $kondisiLama = $barangLab['kondisi'];
+            $kondisiBaru = $this->request->getPost('kondisi');
+
+            if ($kondisiBaru !== $kondisiLama) {
+                if ($kondisiBaru == 'Rusak') {
+                    $this->barangDetailModel->update($barangLab['id_barang_detail'], [
+                        'status'  => 'Menunggu Diperbaiki',
+                        'kondisi' => 'Rusak'
+                    ]);
+                } elseif ($kondisiBaru == 'Hilang') {
+                    $this->barangDetailModel->update($barangLab['id_barang_detail'], [
+                        'status'  => 'Hilang',
+                        'kondisi' => 'Hilang'
+                    ]);
+                } elseif ($kondisiBaru == 'Baik' && $kondisiLama !== 'Hilang') {
+                    $this->barangDetailModel->update($barangLab['id_barang_detail'], [
+                        'status'  => 'TERPAKAI',
+                        'kondisi' => 'Baik'
+                    ]);
+                }
+                
+            }
+
+
             // **Update data Barang Lab**
             $this->barangLabModel->update($id, [
                 'id_lab'           => $this->request->getPost('id_lab'),
@@ -213,9 +252,6 @@ class BarangLabController extends Controller
                 return redirect()->back()->with('error', 'Barang detail tidak ditemukan.');
             }
 
-            // **Hapus data dari tabel barang_lab**
-            $this->barangLabModel->delete($id);
-
             // Update posisi barang_detail
             $this->barangDetailModel->update($barangLab['id_barang_detail'], [
                 'posisi_barang' => 'Gudang' // perlu dikonfirmasi nanti dikembalikannya kemana
@@ -234,6 +270,22 @@ class BarangLabController extends Controller
                     $this->barangModel->tambahStok($barang_detail['id_barang'], $barangLab['jumlah']);
                 }
             }
+
+            // update kondisi di barang detail
+            if ($barangLab['kondisi'] == 'Rusak') {
+                $this->barangDetailModel->update($barangLab['id_barang_detail'], [
+                    'status'  => 'TERSEDIA',
+                    'kondisi' => 'Rusak'
+                ]);
+            } elseif ($barangLab['kondisi'] == 'Hilang') {
+                $this->barangDetailModel->update($barangLab['id_barang_detail'], [
+                    'status'  => 'Hilang',
+                    'kondisi' => 'Hilang'
+                ]);
+            }
+            
+            // **Hapus data dari tabel barang_lab**
+            $this->barangLabModel->delete($id);
 
             return redirect()->to('/barang-lab')->with('success', 'Barang Lab berhasil dihapus.');
         } catch (\Exception $e) {

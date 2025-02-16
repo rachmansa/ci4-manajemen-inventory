@@ -66,8 +66,16 @@
                      <option value="tersedia" <?= $barang_detail['status'] == 'tersedia' ? 'selected' : '' ?>>Tersedia</option>
                      <option value="terpakai" <?= $barang_detail['status'] == 'terpakai' ? 'selected' : '' ?>>Terpakai</option>
                      <option value="dipinjam" <?= $barang_detail['status'] == 'dipinjam' ? 'selected' : '' ?>>Dipinjam</option>
-                     <option value="rusak" <?= $barang_detail['status'] == 'rusak' ? 'selected' : '' ?>>Rusak</option>
+                     <option value="menunggu diperbaiki" <?= $barang_detail['status'] == 'menunggu diperbaiki' ? 'selected' : '' ?>>Menunggu Diperbaiki</option>
                      <option value="hilang" <?= $barang_detail['status'] == 'hilang' ? 'selected' : '' ?>>Hilang</option>
+                  </select>
+               </div>
+               <div class="mb-3">
+                  <label for="kondisi" class="form-label">Kondisi</label>
+                  <select name="kondisi" id="kondisi" class="form-select" required>
+                     <option value="baik" <?= $barang_detail['kondisi'] == 'baik' ? 'selected' : '' ?>>Baik</option>
+                     <option value="rusak" <?= $barang_detail['kondisi'] == 'rusak' ? 'selected' : '' ?>>Rusak</option>
+                     <option value="hilang" <?= $barang_detail['kondisi'] == 'hilang' ? 'selected' : '' ?>>Hilang</option>
                   </select>
                </div>
                <div class="text-end">

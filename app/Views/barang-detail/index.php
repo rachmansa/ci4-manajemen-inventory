@@ -25,7 +25,7 @@
                      <th>Penggunaan</th>
                      <th>Tahun</th>
                      <th>Posisi</th>
-                     <th>Status</th>
+                     <th>Status / Kondisi</th>
                      <th>Aksi</th>
                   </tr>
                </thead>
@@ -44,6 +44,10 @@
                      <td>
                         <span class="badge bg-<?= $barang_detail['status_class'] ?>">
                             <?= ucfirst($barang_detail['status']) ?>
+                        </span>
+                        <br>
+                        <span class="badge bg-<?= $barang_detail['kondisi_class'] ?>">
+                            <?= ucfirst($barang_detail['kondisi']) ?>
                         </span>
                      </td>
                      <td>

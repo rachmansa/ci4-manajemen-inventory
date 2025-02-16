@@ -34,6 +34,16 @@ class BarangDetailController extends Controller
             case 'tersedia': return 'success';
             case 'terpakai': return 'primary';
             case 'dipinjam': return 'warning';
+            case 'menunggu diperbaiki': return 'info';
+            case 'hilang': return 'dark';
+            default: return 'secondary';
+        }
+    }
+
+    private function getKondisiClass($kondisi)
+    {
+        switch ($kondisi) {
+            case 'baik': return 'success';
             case 'rusak': return 'danger';
             case 'hilang': return 'dark';
             default: return 'secondary';
@@ -50,6 +60,8 @@ class BarangDetailController extends Controller
 
         foreach ($barang_details as &$barang) {
             $barang['status_class'] = $this->getStatusClass($barang['status']);
+            $barang['kondisi_class'] = $this->getKondisiClass($barang['kondisi']);
+
         }
 
         return view('barang-detail/index', ['barang_details' => $barang_details]);
@@ -92,11 +104,14 @@ class BarangDetailController extends Controller
             'tahun_barang' => 'required',
             'serial_number' => 'permit_empty|is_unique[barang_detail.serial_number]',
             'nomor_bmn' => 'is_unique[barang_detail.nomor_bmn]|max_length[100]',
-            'status' => 'required|in_list[tersedia,terpakai,dipinjam,rusak,hilang]',
+            'status' => 'required|in_list[tersedia,terpakai,dipinjam,menunggu diperbaiki, hilang]',
+            'kondisi' => 'required|in_list[baik,rusak,hilang]',
+
         ])) {
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data. Pastikan semua input benar dan Nomor BMN serta Serial Number tidak duplikat.');
         }
 
+        
         // Simpan Barang Detail
         $this->barangDetailModel->insert([
             'id_barang' => $idBarang,
@@ -106,6 +121,8 @@ class BarangDetailController extends Controller
             'nomor_bmn' => $this->request->getPost('nomor_bmn'),
             'tahun_barang' => $this->request->getPost('tahun_barang'),
             'status' => $this->request->getPost('status'),
+            'kondisi' => $this->request->getPost('kondisi'),
+            
         ]);
 
         return redirect()->to('/barang-detail')->with('success', 'Barang detail berhasil ditambahkan.');
@@ -142,7 +159,9 @@ class BarangDetailController extends Controller
             'posisi_barang' => 'required',
             'id_jenis_penggunaan' => 'required',
             'tahun_barang' => 'required',
-            'status' => 'required|in_list[tersedia,terpakai,dipinjam,rusak,hilang]',
+            'status' => 'required|in_list[tersedia,terpakai,dipinjam,menunggu diperbaiki, hilang]',
+            'kondisi' => 'required|in_list[baik,rusak,hilang]',
+
         ])) {
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data. Pastikan semua input benar dan Nomor BMN serta Serial Number tidak duplikat.');
         }
@@ -175,6 +194,8 @@ class BarangDetailController extends Controller
                 'nomor_bmn' => $this->request->getPost('nomor_bmn'),
                 'tahun_barang' => $this->request->getPost('tahun_barang'),
                 'status' => $this->request->getPost('status'),
+                'kondisi' => $this->request->getPost('kondisi'),
+
             ]);
 
             return redirect()->to('/barang-detail')->with('success', 'Barang detail berhasil diperbarui.');
