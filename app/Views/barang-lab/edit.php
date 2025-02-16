@@ -43,11 +43,13 @@
                   <input type="number" name="jumlah" id="jumlah" class="form-control"
                      value="<?= old('jumlah', $barang_lab['jumlah']) ?>"
                      min="1"
-                     max="<?= $stok_tersedia ?>"
+                     max="<?= max(1, $stok_tersedia + $barang_lab['jumlah']) ?>"
                      <?= ($barang_detail['serial_number'] || $barang_detail['nomor_bmn']) ? 'readonly' : '' ?>>
-                  <small class="text-muted">Maksimal: <?= $stok_tersedia ?></small>
+
+                     <small class="text-muted">Maksimal Tambahan: <?= $stok_tersedia ?></small>
                </div>
 
+               
 
                <div class="mb-3">
                   <label for="id_lab" class="form-label">Lab</label>

@@ -59,19 +59,10 @@ class BarangLabController extends Controller
         $barang_detail = $this->barangDetailModel->find($id_barang_detail);
         $barang = $this->barangModel->find($barang_detail['id_barang']);
         $jumlah = (int) $this->request->getPost('jumlah') ?: 1;
+        $lab = $this->labCatModel->find($this->request->getPost('id_lab'));
 
-        // Cek apakah barang_detail sudah ada di lab yang sama
-        $existing = $this->barangLabModel
-            ->where('id_barang_detail', $this->request->getPost('id_barang_detail'))
-            ->where('id_lab', $this->request->getPost('id_lab'))
-            ->first();
-
-        if ($existing) {
-            return redirect()->back()->withInput()->with('error', 'Barang ini sudah terdaftar di Lab yang sama.');
-        }
-
-        if (!$barang_detail) {
-            return redirect()->back()->with('error', 'Barang tidak ditemukan.');
+        if (!$barang_detail || !$barang || !$lab) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
 
         // **Validasi stok**
@@ -91,8 +82,11 @@ class BarangLabController extends Controller
         ];
 
         try {
-            // Update status barang_detail menjadi TERPAKAI
-            $this->barangDetailModel->update($id_barang_detail, ['status' => 'TERPAKAI']);
+            // Update status barang_detail menjadi TERPAKAI & posisi barang
+            $this->barangDetailModel->update($id_barang_detail, [
+                'status' => 'terpakai',
+                'posisi_barang' => "{$lab['nama_lab']}"
+            ]);
 
             // Kurangi stok barang utama
             $this->barangModel->kurangiStok($barang_detail['id_barang'], $jumlah);
@@ -105,32 +99,6 @@ class BarangLabController extends Controller
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
         }
     }
-
-    // public function edit($id)
-    // {
-    //     $barangLab = $this->barangLabModel->find($id);
-    //     if (!$barangLab) {
-    //         return redirect()->back()->with('error', 'Data tidak ditemukan.');
-    //     }
-
-    //     // Ambil data barang detail (untuk mendapatkan id_barang)
-    //     $barangDetail = $this->barangDetailModel->find($barangLab['id_barang_detail']);
-    //     if (!$barangDetail) {
-    //         return redirect()->to(base_url('barang-lab'))->with('error', 'Barang detail tidak ditemukan.');
-    //     }
-
-    //     // Ambil stok barang utama
-    //     $barang = $this->barangModel->find($barangDetail['id_barang']);
-    //     $stokTersedia = $barang ? $barang['stok'] : 0;
-        
-    //     $data = [
-    //         'barang_lab'       => $barangLab,
-    //         'labs'             => $this->labCatModel->findAll(),
-    //         'stok_tersedia' => $stokTersedia,
-    //     ];
-
-    //     return view('barang-lab/edit', $data);
-    // }
 
     public function edit($id)
     {
@@ -156,7 +124,6 @@ class BarangLabController extends Controller
         return view('barang-lab/edit', $data);
     }
 
-
     public function update($id)
     {
         if (!$this->validate([
@@ -173,16 +140,25 @@ class BarangLabController extends Controller
             return redirect()->back()->with('error', 'Data tidak ditemukan.');
         }
 
-        $id_barang = $barangLab['id_barang'];
-        $barang = $this->barangModel->find($id_barang);
-        $jumlah_lama = $barangLab['jumlah'] ?? 1;
-        $jumlah_baru = $this->request->getPost('jumlah') ?: 1;
-
-        if (!$barang) {
-            return redirect()->back()->with('error', 'Barang tidak ditemukan.');
+        $barangDetail = $this->barangDetailModel->find($barangLab['id_barang_detail']);
+        if (!$barangDetail) {
+            return redirect()->back()->with('error', 'Detail barang tidak ditemukan.');
         }
 
-        // **Validasi stok jika jumlah bertambah**
+        $barang = $this->barangModel->find($barangDetail['id_barang']);
+        if (!$barang) {
+            return redirect()->back()->with('error', 'Barang utama tidak ditemukan.');
+        }
+
+        $jumlah_lama = $barangLab['jumlah'] ?? 1;
+        $jumlah_baru = $this->request->getPost('jumlah') ?: 1;
+        $lab = $this->labCatModel->find($this->request->getPost('id_lab'));
+
+        if (!$lab) {
+            return redirect()->back()->with('error', 'Lab tidak ditemukan.');
+        }
+
+        // **Validasi stok hanya jika jumlah bertambah**
         if ($jumlah_baru > $jumlah_lama) {
             $stok_tersedia = $barang['stok'];
             $selisih = $jumlah_baru - $jumlah_lama;
@@ -195,12 +171,19 @@ class BarangLabController extends Controller
         try {
             // **Update stok barang jika jumlah berubah**
             if ($jumlah_baru > $jumlah_lama) {
-                $this->barangModel->kurangiStok($id_barang, $jumlah_baru - $jumlah_lama);
+                $this->barangModel->kurangiStok($barangDetail['id_barang'], $jumlah_baru - $jumlah_lama);
             } elseif ($jumlah_baru < $jumlah_lama) {
-                $this->barangModel->tambahStok($id_barang, $jumlah_lama - $jumlah_baru);
+                $this->barangModel->tambahStok($barangDetail['id_barang'], $jumlah_lama - $jumlah_baru);
             }
 
-            // **Update data barang lab**
+            // **Update posisi jika Lab berubah**
+            if ($barangLab['id_lab'] != $lab['id_lab']) {
+                $this->barangDetailModel->update($barangLab['id_barang_detail'], [
+                    'posisi_barang' => "{$lab['nama_lab']}"
+                ]);
+            }
+
+            // **Update data Barang Lab**
             $this->barangLabModel->update($id, [
                 'id_lab'           => $this->request->getPost('id_lab'),
                 'nama_barang_lab'  => $this->request->getPost('nama_barang_lab'),
@@ -213,6 +196,7 @@ class BarangLabController extends Controller
             return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan, coba lagi.');
         }
     }
+
 
     public function delete($id)
     {
@@ -231,6 +215,11 @@ class BarangLabController extends Controller
 
             // **Hapus data dari tabel barang_lab**
             $this->barangLabModel->delete($id);
+
+            // Update posisi barang_detail
+            $this->barangDetailModel->update($barangLab['id_barang_detail'], [
+                'posisi_barang' => 'Gudang' // perlu dikonfirmasi nanti dikembalikannya kemana
+            ]);
 
             // **Jika barang punya SN/BMN**
             if ($barang_detail['serial_number'] || $barang_detail['nomor_bmn']) {
