@@ -23,7 +23,8 @@ class BarangKeluarController extends Controller
 
     public function index()
     {
-        $data['barangKeluar'] = $this->barangKeluarModel->findAll();
+        // $data['barang_keluar'] = $this->barangKeluarModel->findAll();
+        $data['barang_keluar'] = $this->barangKeluarModel->getBarangKeluar();
         return view('barang-keluar/index', $data);
     }
 
@@ -40,9 +41,15 @@ class BarangKeluarController extends Controller
 
     public function store()
     {
+        $id_barang_detail_list = $this->request->getPost('id_barang_detail') ?? [];
+
+        if (empty($id_barang_detail_list)) {
+            return redirect()->back()->with('error', 'Barang Detail tidak boleh kosong.');
+        }
+
         $data = [
             'id_barang' => $this->request->getPost('id_barang'),
-            'id_barang_detail' => $this->request->getPost('id_barang_detail'),
+            'id_barang_detail' => implode(',', $id_barang_detail_list), // Simpan sebagai string CSV
             'jumlah' => $this->request->getPost('jumlah'),
             'tanggal_keluar' => $this->request->getPost('tanggal_keluar'),
             'alasan' => $this->request->getPost('alasan'),
@@ -57,14 +64,18 @@ class BarangKeluarController extends Controller
         }
     }
 
+
+
     public function delete($id)
     {
-        if ($this->barangKeluarModel->hapusBarangKeluar($id)) {
-            return redirect()->to('/barang-keluar')->with('success', 'Barang Keluar berhasil dibatalkan.');
-        } else {
-            return redirect()->back()->with('error', 'Gagal membatalkan Barang Keluar.');
+        
+        if (!$this->barangKeluarModel->hapusBarangKeluar($id)) {
+            return redirect()->back()->with('error', 'Gagal membatalkan Barang Keluar atau data tidak ditemukan.');
         }
+
+        return redirect()->to('/barang-keluar')->with('success', 'Barang Keluar berhasil dibatalkan.');
     }
+
 
     public function getBarangDetail()
     {

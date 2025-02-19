@@ -75,10 +75,7 @@ class BarangKeluarController extends Controller
             $this->barangKeluarModel->updateStatusBarangDetail($id_barang_detail);
         }
 
-        // Hapus barang dari Barang Lab & Barang Pegawai jika masih ada
-        if (!empty($id_barang_detail)) {
-            $this->barangKeluarModel->hapusDariLabDanPegawai($id_barang_detail);
-        }
+        
 
 
         return redirect()->to('/barang-keluar')->with('success', 'Barang berhasil dikeluarkan!');

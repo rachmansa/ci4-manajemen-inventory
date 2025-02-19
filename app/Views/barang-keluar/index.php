@@ -40,27 +40,14 @@
                                     <td><?= esc($bk['jumlah']) ?></td>
                                     <td>
                                         <?php 
-                                        // Decode JSON
-                                        $barangDetails = []; 
-                                        if (!empty($bk['barang_details'])) {
-                                            $detailsArray = explode(';', $bk['barang_details']);
-                                            foreach ($detailsArray as $detail) {
-                                                $splitDetail = explode('|', $detail);
-                                                $barangDetails[] = [
-                                                    'id_barang_detail' => $splitDetail[0],
-                                                    'merk' => $splitDetail[1] ?? '',
-                                                    'serial_number' => $splitDetail[2] ?? '',
-                                                    'nomor_bmn' => $splitDetail[3] ?? '',
-                                                ];
-                                            }
-                                        }
+                                        $barangDetails = json_decode($bk['barang_details'], true);
                                         
                                         if (!empty($barangDetails)) :
                                             foreach ($barangDetails as $detail) :
                                         ?>
                                             <div>
                                                 <ul>
-                                                    <li style="list-style-type: none;"><strong><?= esc($detail['merk'] ?: '-') ?></li></strong>
+                                                    <li style="list-style-type: none;"><strong><?= esc($detail['merk'] ?: '-') ?></strong></li>
                                                     <li>Serial Number: <?= esc($detail['serial_number'] ?: '-') ?></li>
                                                     <li>BMN: <?= esc($detail['nomor_bmn'] ?: '-') ?></li>
                                                 </ul>
@@ -73,11 +60,11 @@
                                         endif;
                                         ?>
                                     </td>
+
                                     <td><?= esc($bk['alasan']) ?></td>
                                     <td><?= esc($bk['pihak_penerima'] ?? '-') ?></td>
                                     <td><?= date('d-m-Y', strtotime($bk['tanggal_keluar'])) ?></td>
                                     <td>
-                                        <a href="<?= base_url('barang-keluar/edit/' . $bk['id_barang_keluar']) ?>" class="btn btn-warning btn-sm">Edit</a>
                                         <button class="btn btn-danger btn-sm delete-btn" data-id="<?= $bk['id_barang_keluar'] ?>" data-nama="<?= $bk['nama_barang'] ?>">Hapus</button>
                                     </td>
                                 </tr>
