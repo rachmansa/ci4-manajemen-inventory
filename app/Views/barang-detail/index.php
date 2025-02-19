@@ -21,6 +21,7 @@
                <thead>
                   <tr>
                      <th>Nama Barang</th>
+                     <th>Merk & Tipe</th>
                      <th>Kode Barang</th>
                      <th>Penggunaan</th>
                      <th>Tahun</th>
@@ -33,10 +34,11 @@
                   <?php foreach ($barang_details as $barang_detail) : ?>
                   <tr>
                      <td><?= $barang_detail['nama_barang'] ?> <br> <small>Tahun : <?= $barang_detail['tahun_barang']?></small></td>
+                     <td><?= !empty($barang_detail['merk']) ? $barang_detail['merk'] : "-" ?></td>
                      <td>
-                        <small>Nomor BMN : <?= $barang_detail['nomor_bmn'] ?></small> 
-                        <br> 
                         <small>Serial Number : <?= !empty($barang_detail['serial_number']) ? $barang_detail['serial_number'] : "-" ?></small>
+                        <br>
+                        <small>Nomor BMN : <?= !empty($barang_detail['nomor_bmn']) ? $barang_detail['nomor_bmn'] : "-" ?></small>
                      </td>
                      <td><?= $barang_detail['nama_penggunaan'] ?></td>
                      <td><?= $barang_detail['tahun_barang'] ?></td>

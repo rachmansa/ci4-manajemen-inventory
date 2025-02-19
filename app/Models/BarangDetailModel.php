@@ -8,7 +8,7 @@ class BarangDetailModel extends Model
 {
     protected $table            = 'barang_detail';
     protected $primaryKey       = 'id_barang_detail';
-    protected $allowedFields    = ['id_barang', 'serial_number','posisi_barang', 'id_jenis_penggunaan','nomor_bmn', 'tahun_barang','status', 'kondisi','id_barang_dipinjam', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_barang', 'serial_number','posisi_barang', 'id_jenis_penggunaan','nomor_bmn', 'merk', 'tahun_barang','status', 'kondisi','id_barang_dipinjam', 'created_at', 'updated_at'];
     protected $useTimestamps    = true;
 
     public function getBarangDetail($id = null)
@@ -35,8 +35,10 @@ class BarangDetailModel extends Model
             ->whereNotIn('barang_detail.id_barang_detail', function($builder) {
                 return $builder->select('id_barang_detail')->from('barang_lab');
             })
+            ->where('barang_detail.status !=', 'penghapusan aset') // Exclude items with status 'penghapusan aset'
             ->get()
             ->getResultArray();
+
 
         // Format nama barang sesuai aturan
         $formattedBarang = [];
@@ -53,7 +55,8 @@ class BarangDetailModel extends Model
                 'id_barang_detail' => $barang['id_barang_detail'],
                 'nama_barang'      => $nama,
                 'serial_number'    => $barang['serial_number'],
-                'nomor_bmn'        => $barang['nomor_bmn']
+                'nomor_bmn'        => $barang['nomor_bmn'],
+             
             ];
         }
 
@@ -67,6 +70,30 @@ class BarangDetailModel extends Model
             ->where('barang_detail.id_barang_detail', $id_barang_detail)
             ->first();
     }
+
+    public function getCurrentPositionByBarang($id_barang)
+    {
+        return $this->where('id_barang', $id_barang)
+                    ->limit(1) // Ambil salah satu data
+                    ->get()
+                    ->getRow('posisi');
+    }
+
+    public function getCurrentPosition($id_barang_detail)
+    {
+        $query = $this->db->table('barang_detail')
+            ->select('posisi_barang')
+            ->where('id_barang_detail', $id_barang_detail) // Gunakan field yang benar
+            ->get();
+
+        if (!$query || $query->getNumRows() == 0) {
+            return null; // Jika tidak ada data, kembalikan null
+        }
+
+        return $query->getFirstRow('array')['posisi_barang'] ?? null;
+    }
+
+
 
 
 }

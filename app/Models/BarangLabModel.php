@@ -31,4 +31,10 @@ class BarangLabModel extends Model
             ->join('lab_cat', 'lab_cat.id_lab = barang_lab.id_lab', 'left')
             ->findAll();
     }
+
+    public function deleteByBarangDetail($id_barang_detail)
+    {
+        return $this->where('id_barang_detail', $id_barang_detail)->delete();
+    }
+
 }

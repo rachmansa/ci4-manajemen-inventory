@@ -31,6 +31,10 @@
                   <input type="hidden" name="id_barang" value="<?= $barang_detail['id_barang'] ?>">
                </div>
                <div class="mb-3">
+                  <label for="merk" class="form-label">Merk & Tipe Barang</label>
+                  <input type="text" name="merk" id="merk" class="form-control" value="<?= $barang_detail['merk'] ?>">
+               </div>
+               <div class="mb-3">
                   <label for="nomor_bmn" class="form-label">Nomor BMN</label>
                   <input type="text" name="nomor_bmn" id="nomor_bmn" class="form-control" value="<?= $barang_detail['nomor_bmn'] ?>">
                </div>
@@ -68,6 +72,7 @@
                      <option value="dipinjam" <?= $barang_detail['status'] == 'dipinjam' ? 'selected' : '' ?>>Dipinjam</option>
                      <option value="menunggu diperbaiki" <?= $barang_detail['status'] == 'menunggu diperbaiki' ? 'selected' : '' ?>>Menunggu Diperbaiki</option>
                      <option value="hilang" <?= $barang_detail['status'] == 'hilang' ? 'selected' : '' ?>>Hilang</option>
+                     <option value="penghapusan aset" <?= $barang_detail['status'] == 'penghapusan aset' ? 'selected' : '' ?>>Penghapusan Aset</option>
                   </select>
                </div>
                <div class="mb-3">

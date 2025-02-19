@@ -29,6 +29,10 @@
                   </select>
                </div>
                <div class="mb-3">
+                  <label for="merk" class="form-label">Merk & Tipe Barang</label>
+                  <input type="text" name="merk" id="merk" class="form-control" value="<?= old('merk') ?>" required>
+              </div>
+               <div class="mb-3">
                   <label for="nomor_bmn" class="form-label">Nomor BMN</label>
                   <input type="text" name="nomor_bmn" id="nomor_bmn" class="form-control" value="<?= old('nomor_bmn') ?>">
               </div>
@@ -66,6 +70,7 @@
                      <option value="dipinjam" <?= old('status') == 'dipinjam' ? 'selected' : '' ?>>Dipinjam</option>
                      <option value="menunggu diperbaiki" <?= old('status') == 'diperbaiki' ? 'selected' : '' ?>>Menunggu Diperbaiki</option>
                      <option value="hilang" <?= old('status') == 'hilang' ? 'selected' : '' ?>>Hilang</option>
+                     <option value="penghapusan aset" <?= old('status') == 'penghapusan aset' ? 'selected' : '' ?>>Penghapusan Aset</option>
                   </select>
                </div>
                <div class="mb-3">

@@ -26,6 +26,10 @@ class CreateBarangDetailTable extends Migration
                 'unique'     => true,
                 'null'       => true, // Bisa null jika barang tidak memiliki serial number
             ],
+            'merk' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255
+            ],
             'posisi_barang' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255
@@ -46,7 +50,7 @@ class CreateBarangDetailTable extends Migration
             ],
             'status' => [
                 'type'       => 'ENUM',
-                'constraint' => ['tersedia', 'terpakai','dipinjam', 'rusak', 'hilang','perbaikan'],
+                'constraint' => ['tersedia', 'terpakai','dipinjam', 'menunggu diperbaiki', 'hilang','penghapusan aset'],
                 'default'    => 'tersedia',
             ],
             'created_at' => [

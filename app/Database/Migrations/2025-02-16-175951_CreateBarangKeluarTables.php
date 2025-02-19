@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class BarangKeluarMigration extends Migration
+class BarangKeluar extends Migration
 {
     public function up()
     {
@@ -21,14 +21,8 @@ class BarangKeluarMigration extends Migration
                 'unsigned'   => true,
             ],
             'id_barang_detail' => [
-                'type'       => 'INT',
-                'constraint' => 10,
-                'unsigned'   => true,
+                'type'       => 'TEXT', // Menyimpan multiple ID barang detail (jika ada)
                 'null'       => true,
-            ],
-            'id_penggunaan' => [
-                'type' => 'INT',
-                'constraint' => 11,
             ],
             'jumlah' => [
                 'type'       => 'INT',
@@ -36,6 +30,15 @@ class BarangKeluarMigration extends Migration
             ],
             'tanggal_keluar' => [
                 'type' => 'DATE',
+            ],
+            'alasan' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'penerima_barang' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => true,
             ],
             'keterangan' => [
                 'type' => 'TEXT',
@@ -45,8 +48,6 @@ class BarangKeluarMigration extends Migration
 
         $this->forge->addKey('id_barang_keluar', true);
         $this->forge->addForeignKey('id_barang', 'barang', 'id_barang', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_barang_detail', 'barang_detail', 'id_barang_detail', 'CASCADE', 'SET NULL');
-        $this->forge->addForeignKey('id_penggunaan', 'jenis_penggunaan', 'id_penggunaan', 'CASCADE', 'CASCADE');
         $this->forge->createTable('barang_keluar');
     }
 

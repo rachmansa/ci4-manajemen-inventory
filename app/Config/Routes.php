@@ -81,6 +81,16 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->post('/barang-masuk/update/(:num)', 'BarangMasukController::update/$1');
     $routes->post('/barang-masuk/delete/(:num)', 'BarangMasukController::delete/$1');
 
+    // BARANG KELUAR
+    $routes->get('/barang-keluar', 'BarangKeluarController::index');
+    $routes->get('/barang-keluar/create', 'BarangKeluarController::create');
+    $routes->post('/barang-keluar/store', 'BarangKeluarController::store');
+    $routes->get('/barang-keluar/edit/(:num)', 'BarangKeluarController::edit/$1');
+    $routes->post('/barang-keluar/update/(:num)', 'BarangKeluarController::update/$1');
+    $routes->post('/barang-keluar/delete/(:num)', 'BarangKeluarController::delete/$1');
+    $routes->get('barang-keluar/get-barang-detail', 'BarangKeluarController::getBarangDetail');
+
+
     // BARANG DETAIL
     $routes->get('/barang-detail', 'BarangDetailController::index');
     $routes->get('/barang-detail/create', 'BarangDetailController::create');

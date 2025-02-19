@@ -20,5 +20,4 @@
 
     <!-- <script src="<?= base_url('/assets/js/datatables.min.js') ?>"></script> -->
 
-
     

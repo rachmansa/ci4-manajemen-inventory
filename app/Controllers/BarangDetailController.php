@@ -102,9 +102,10 @@ class BarangDetailController extends Controller
             'posisi_barang' => 'required',
             'id_jenis_penggunaan' => 'required',
             'tahun_barang' => 'required',
+            'merk' => 'required',
             'serial_number' => 'permit_empty|is_unique[barang_detail.serial_number]',
             'nomor_bmn' => 'is_unique[barang_detail.nomor_bmn]|max_length[100]',
-            'status' => 'required|in_list[tersedia,terpakai,dipinjam,menunggu diperbaiki, hilang]',
+            'status' => 'required|in_list[tersedia,terpakai,dipinjam,menunggu diperbaiki, hilang, penghapusan aset]',
             'kondisi' => 'required|in_list[baik,rusak,hilang]',
 
         ])) {
@@ -118,6 +119,7 @@ class BarangDetailController extends Controller
             'posisi_barang' => $this->request->getPost('posisi_barang'),
             'id_jenis_penggunaan' => $this->request->getPost('id_jenis_penggunaan'),
             'serial_number' => $this->request->getPost('serial_number') ?: null,
+            'merk' => $this->request->getPost('merk'),
             'nomor_bmn' => $this->request->getPost('nomor_bmn'),
             'tahun_barang' => $this->request->getPost('tahun_barang'),
             'status' => $this->request->getPost('status'),
@@ -159,7 +161,8 @@ class BarangDetailController extends Controller
             'posisi_barang' => 'required',
             'id_jenis_penggunaan' => 'required',
             'tahun_barang' => 'required',
-            'status' => 'required|in_list[tersedia,terpakai,dipinjam,menunggu diperbaiki, hilang]',
+            'merk' => 'required',
+            'status' => 'required|in_list[tersedia,terpakai,dipinjam,menunggu diperbaiki, hilang, penghapusan aset]',
             'kondisi' => 'required|in_list[baik,rusak,hilang]',
 
         ])) {
@@ -192,6 +195,7 @@ class BarangDetailController extends Controller
                 'id_jenis_penggunaan' => $this->request->getPost('id_jenis_penggunaan'),
                 'serial_number' => $this->request->getPost('serial_number') ?: null,
                 'nomor_bmn' => $this->request->getPost('nomor_bmn'),
+                'merk' => $this->request->getPost('merk'),
                 'tahun_barang' => $this->request->getPost('tahun_barang'),
                 'status' => $this->request->getPost('status'),
                 'kondisi' => $this->request->getPost('kondisi'),
