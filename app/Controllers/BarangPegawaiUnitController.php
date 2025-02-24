@@ -509,46 +509,49 @@ class BarangPegawaiUnitController extends Controller
         }
 
         // Buat tampilan HTML tabel dengan tombol Edit dan Delete
-        $html = '<table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nama Barang</th>
-                <th>Nomor Barang</th>
-                <th>Tanggal Serah Terima</th>
-                <th>Kondisi</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>';
+        $html = '';
 
         foreach ($barangList as $barang) {
-            $html .= '<tr>
-                <td>' . esc($barang['nama_barang']) . '</td>
-                <td> Serial Number : ' . (!empty($barang['serial_number']) ? esc($barang['serial_number']) : '-') . 
-                    '<br>
-                    Nomor BMN : '. (!empty($barang['nomor_bmn']) ? esc($barang['nomor_bmn']) : '-') .'
-                </td>
-                <td> Awal : '. (!empty($barang['tanggal_serah_terima_awal']) ? esc($barang['tanggal_serah_terima_awal']) : '-') .
-                    '<br>
-                    Akhir : '. (!empty($barang['tanggal_serah_terima_akhir']) ? esc($barang['tanggal_serah_terima_akhir']) : '-') .'
-                </td>
-                <td>'. esc($barang['kondisi_barang']) . '</td>
-                <td>
-                    <a href="' . base_url('barang-pegawai-unit/edit/' . $barang['id_barang_pegawai_unit']) . '" class="btn btn-warning btn-sm">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <button class="btn btn-danger btn-sm deleteBarang" data-id="'. $barang['id_barang_pegawai_unit'] . '">
-                        <i class="fa fa-trash"></i> Hapus
-                    </button>
-
-                </td>
-            </tr>';
+            $html .= '<table class="table table-bordered mb-3">
+                <tbody>
+                    <tr>
+                        <th>Nama Barang</th>
+                        <td>' . esc($barang['nama_barang']) . '</td>
+                    </tr>
+                    <tr>
+                        <th>Serial Number</th>
+                        <td>' . (!empty($barang['serial_number']) ? esc($barang['serial_number']) : '-') . '</td>
+                    </tr>
+                    <tr>
+                        <th>Nomor BMN</th>
+                        <td>' . (!empty($barang['nomor_bmn']) ? esc($barang['nomor_bmn']) : '-') . '</td>
+                    </tr>
+                    <tr>
+                        <th>Tanggal Serah Terima</th>
+                        <td>
+                            Awal: ' . (!empty($barang['tanggal_serah_terima_awal']) ? esc($barang['tanggal_serah_terima_awal']) : '-') . '<br>
+                            Akhir: ' . (!empty($barang['tanggal_serah_terima_akhir']) ? esc($barang['tanggal_serah_terima_akhir']) : '-') . '
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Kondisi</th>
+                        <td>' . esc($barang['kondisi_barang']) . '</td>
+                    </tr>
+                    <tr>
+                        <th>Aksi</th>
+                        <td>
+                            <a href="' . base_url('barang-pegawai-unit/edit/' . $barang['id_barang_pegawai_unit']) . '" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <button class="btn btn-danger btn-sm deleteBarang" data-id="' . $barang['id_barang_pegawai_unit'] . '">
+                                <i class="fa fa-trash"></i> Hapus
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>';
         }
-
-        $html .= '</tbody></table>';
-
-
-        $html .= '</tbody></table>';
+        
         
         return $this->response->setJSON(['status' => 'success', 'html' => $html]);
     }
