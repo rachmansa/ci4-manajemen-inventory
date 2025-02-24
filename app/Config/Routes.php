@@ -109,6 +109,17 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/barang-lab/get-serials/(:num)', 'BarangLabController::getSerials/$1');
     $routes->post('/barang-lab/get-barang-info', 'BarangLabController::getBarangInfo');
 
+    // BARANG PEGAWAI UNIT
+    $routes->get('barang-pegawai-unit', 'BarangPegawaiUnitController::index');
+    $routes->get('barang-pegawai-unit/create/(:num)', 'BarangPegawaiUnitController::create/$1');
+    $routes->post('barang-pegawai-unit/store', 'BarangPegawaiUnitController::store');
+    $routes->get('barang-pegawai-unit/edit/(:num)', 'BarangPegawaiUnitController::edit/$1');
+    $routes->post('barang-pegawai-unit/update/(:num)', 'BarangPegawaiUnitController::update/$1');
+    $routes->post('barang-pegawai-unit/delete/(:num)', 'BarangPegawaiUnitController::delete/$1');
+    $routes->get('barang-pegawai-unit/get-barang-detail', 'BarangPegawaiUnitController::getBarangDetail');
+    $routes->get('barang-pegawai-unit/getBarangByNip/(:num)', 'BarangPegawaiUnitController::getBarangByNip/$1');
+
+
     
 });
 

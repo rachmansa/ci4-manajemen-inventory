@@ -63,6 +63,8 @@ class BarangDetailModel extends Model
         return $formattedBarang;
     }
 
+    
+
     public function getDetailWithBarang($id_barang_detail)
     {
         return $this->select('barang_detail.*, barang.nama_barang, barang.stok')

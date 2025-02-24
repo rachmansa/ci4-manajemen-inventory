@@ -134,7 +134,7 @@
               </a>
             </li>
             <li class="menu-item">
-              <a href="/barang-masuk" class="menu-link">
+              <a href="/barang-pegawai-unit" class="menu-link">
                 <i class="menu-icon tf-icons fa fa-suitcase-rolling"></i>
                 <div data-i18n="Basic">Barang Pegawai Unit</div>
               </a>
