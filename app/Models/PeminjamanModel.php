@@ -129,6 +129,14 @@ class PeminjamanModel extends Model
 
         // Update status barang detail menjadi "Tersedia"
         $barangDetailModel->update($peminjaman['id_barang_detail'], ['status' => 'tersedia']);
+        
+           // Update status barang menjadi "Terpakai"
+           $barangDetailModel->update($peminjaman['id_barang_detail'], [
+            'status' => 'tersedia',
+            'posisi_barang' => 'Penyimpanan Aset'
+        ]);
+
+
        
         // Tambah stok barang utama kembali
         $barang = $barangDetailModel->find($peminjaman['id_barang_detail']);

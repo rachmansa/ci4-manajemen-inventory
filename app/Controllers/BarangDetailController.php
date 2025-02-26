@@ -162,10 +162,12 @@ class BarangDetailController extends Controller
             'id_jenis_penggunaan' => 'required',
             'tahun_barang' => 'required',
             'merk' => 'required',
-            'status' => 'required|in_list[tersedia,terpakai,dipinjam,menunggu diperbaiki, hilang, penghapusan aset]',
+            'status' => 'required',
             'kondisi' => 'required|in_list[baik,rusak,hilang]',
 
         ])) {
+            print_r($this->validator->getErrors()); 
+            dd($this->request->getPost());
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data. Pastikan semua input benar dan Nomor BMN serta Serial Number tidak duplikat.');
         }
 

@@ -65,8 +65,10 @@
                   <input type="text" name="posisi_barang" id="posisi_barang" class="form-control" value="<?= $barang_detail['posisi_barang'] ?>">
                </div>
                <div class="mb-3">
+                  <input type="hidden" name="status" value="<?= $barang_detail['status'] ?>">
+
                   <label for="status" class="form-label">Status</label>
-                  <select name="status" id="status" class="form-select" required>
+                  <select name="status" id="status" class="form-select" disabled required>
                      <option value="tersedia" <?= $barang_detail['status'] == 'tersedia' ? 'selected' : '' ?>>Tersedia</option>
                      <option value="terpakai" <?= $barang_detail['status'] == 'terpakai' ? 'selected' : '' ?>>Terpakai</option>
                      <option value="dipinjam" <?= $barang_detail['status'] == 'dipinjam' ? 'selected' : '' ?>>Dipinjam</option>
@@ -112,11 +114,12 @@
    });
 </script>
 
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         var statusSelect = document.getElementById('status');
         if (statusSelect.value === 'terpakai' || statusSelect.value === 'dipinjam') {
             statusSelect.disabled = true;
         }
     });
-</script>
+</script> -->
+
