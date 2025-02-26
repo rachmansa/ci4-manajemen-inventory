@@ -119,6 +119,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('barang-pegawai-unit/get-barang-detail', 'BarangPegawaiUnitController::getBarangDetail');
     $routes->get('barang-pegawai-unit/getBarangByNip/(:num)', 'BarangPegawaiUnitController::getBarangByNip/$1');
 
+    // PEMINJAMAN BARANG
+    $routes->get('/peminjaman', 'PeminjamanController::index');
+    $routes->post('/peminjaman/delete/(:num)', 'PeminjamanController::delete/$1');
+    $routes->post('/peminjaman/return/(:num)', 'PeminjamanController::processReturn/$1');
+
 
     
 });
@@ -134,6 +139,11 @@ $routes->group('', ['filter' => 'auth', 'filter' => 'role'], function ($routes) 
     $routes->get('admin/activity-logs', 'Admin\ActivityLogController::index', ['filter' => 'auth']);
 
 });
+
+// PEMINJAMAN BARANG OLEH PEGAWAI
+$routes->get('/peminjaman/create', 'PeminjamanController::create');
+$routes->post('/peminjaman/store', 'PeminjamanController::store');
+$routes->get('peminjaman/get-barang-detail', 'PeminjamanController::getBarangDetail');
 
 
 

@@ -140,7 +140,7 @@
               </a>
             </li>
             <li class="menu-item">
-              <a href="/" class="menu-link">
+              <a href="/peminjaman" class="menu-link">
                 <i class="menu-icon tf-icons fa fa-handshake"></i>
                 <div data-i18n="Basic">Peminjaman Barang</div>
               </a>

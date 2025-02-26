@@ -63,6 +63,43 @@ class BarangDetailModel extends Model
         return $formattedBarang;
     }
 
+    public function getAvailableItems()
+    {
+        $barangs = $this->db->table('barang_detail')
+            ->select('barang_detail.*, barang.nama_barang')
+            ->join('barang', 'barang.id_barang = barang_detail.id_barang')
+            ->whereNotIn('barang_detail.id_barang_detail', function($builder) {
+                return $builder->select('id_barang_detail')->from('barang_lab');
+            })
+            ->where('barang_detail.status !=', 'penghapusan aset') // Exclude items with status 'penghapusan aset'
+            ->where('barang_detail.status =', 'tersedia') // include items with status 'tersedia'
+            ->get()
+            ->getResultArray();
+
+
+        // Format nama barang sesuai aturan
+        $formattedBarang = [];
+        foreach ($barangs as $barang) {
+            $nama = $barang['nama_barang'];
+
+            if (!empty($barang['serial_number'])) {
+                $nama .= " - (" . $barang['serial_number'] . ")";
+            } elseif (!empty($barang['nomor_bmn'])) {
+                $nama .= " - (" . $barang['nomor_bmn'] . ")";
+            }
+
+            $formattedBarang[] = [
+                'id_barang_detail' => $barang['id_barang_detail'],
+                'nama_barang'      => $nama,
+                'serial_number'    => $barang['serial_number'],
+                'nomor_bmn'        => $barang['nomor_bmn'],
+             
+            ];
+        }
+
+        return $formattedBarang;
+    }
+
     
 
     public function getDetailWithBarang($id_barang_detail)

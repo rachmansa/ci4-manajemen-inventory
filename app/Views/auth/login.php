@@ -46,7 +46,7 @@
             <div class="authentication-inner">
                <div class="card">
                   <div class="card-body">
-                     <h4 class="mb-5" style="text-align:center">Manajemen User</h4>
+                     <h4 class="mb-5" style="text-align:center">Manajemen Inventory</h4>
                      <?php if (session()->getFlashdata('error')) : ?>
                      <div class="alert alert-danger" role="alert">
                         <?= session()->getFlashdata('error') ?>
