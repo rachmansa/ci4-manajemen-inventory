@@ -104,11 +104,13 @@ class BarangDetailController extends Controller
             'tahun_barang' => 'required',
             'merk' => 'required',
             'serial_number' => 'permit_empty|is_unique[barang_detail.serial_number]',
-            'nomor_bmn' => 'is_unique[barang_detail.nomor_bmn]|max_length[100]',
+            'nomor_bmn' => 'max_length[100]',
             'status' => 'required|in_list[tersedia,terpakai,dipinjam,menunggu diperbaiki, hilang, penghapusan aset]',
             'kondisi' => 'required|in_list[baik,rusak,hilang]',
 
         ])) {
+            // print_r($this->validator->getErrors()); 
+            // dd($this->request->getPost());
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data. Pastikan semua input benar dan Nomor BMN serta Serial Number tidak duplikat.');
         }
 
@@ -166,8 +168,8 @@ class BarangDetailController extends Controller
             'kondisi' => 'required|in_list[baik,rusak,hilang]',
 
         ])) {
-            print_r($this->validator->getErrors()); 
-            dd($this->request->getPost());
+            // print_r($this->validator->getErrors()); 
+            // dd($this->request->getPost());
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data. Pastikan semua input benar dan Nomor BMN serta Serial Number tidak duplikat.');
         }
 
@@ -176,18 +178,13 @@ class BarangDetailController extends Controller
             ->where('id_barang_detail !=', $id)
             ->first();
 
-        $existingBMN = $this->barangDetailModel
-            ->where('nomor_bmn', $this->request->getPost('nomor_bmn'))
-            ->where('id_barang_detail !=', $id)
-            ->first();
+        
 
         if ($existingSerial) {
             return redirect()->back()->withInput()->with('error', 'Serial Number sudah digunakan.');
         }
 
-        if ($existingBMN) {
-            return redirect()->back()->withInput()->with('error', 'Nomor BMN sudah digunakan.');
-        }
+     
 
 
         try {
