@@ -11,32 +11,25 @@ class LogPergerakanBarangModel extends Model
     protected $allowedFields    = [
         'id_barang', 'id_barang_detail', 'status', 
         'posisi_sebelumnya', 'posisi_sekarang', 
-        'keterangan', 'tanggal'
+        'keterangan'
     ];
-    protected $useTimestamps    = false;
 
-    /**
-     * Simpan log pergerakan barang
-     *
-     * @param int    $id_barang
-     * @param int|null $id_barang_detail
-     * @param string $status
-     * @param string $posisi_sebelumnya
-     * @param string $posisi_sekarang
-     * @param string|null $keterangan
-     * @return bool
-     */
+    protected $useTimestamps = true;
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+
     public function tambahLog($id_barang, $id_barang_detail, $status, $posisi_sebelumnya, $posisi_sekarang, $keterangan = null)
     {
-        return $this->insert([
+        return $this->save([
             'id_barang'         => $id_barang,
-            'id_barang_detail'  => $id_barang_detail,
+            'id_barang_detail'  => $id_barang_detail ?: null,
             'status'            => $status,
             'posisi_sebelumnya' => $posisi_sebelumnya,
             'posisi_sekarang'   => $posisi_sekarang,
-            'keterangan'        => $keterangan,
+            'keterangan'        => $keterangan
         ]);
     }
+
 
     /**
      * Ambil log pergerakan barang berdasarkan ID barang

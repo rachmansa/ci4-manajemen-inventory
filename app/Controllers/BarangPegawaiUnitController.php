@@ -121,7 +121,8 @@ class BarangPegawaiUnitController extends Controller
                 "Disimpan oleh {$pegawai['nama_pegawai']}",
                 'Barang disimpan sebagai Barang Pegawai'
             );
-
+            
+      
             return redirect()->to('/barang-pegawai-unit')->with('success', 'Data berhasil ditambahkan');
         } catch (\Exception $e) {
             log_message('error', 'Error saat menyimpan data: ' . $e->getMessage());
@@ -498,7 +499,7 @@ class BarangPegawaiUnitController extends Controller
         }
 
         $barangList = $this->barangPegawaiUnitModel
-            ->select('barang_pegawai_unit.*, barang.nama_barang, barang_detail.serial_number, barang_detail.nomor_bmn')
+            ->select('barang_pegawai_unit.*, barang.nama_barang, barang_detail.serial_number, barang_detail.nomor_bmn, barang_detail.barcode')
             ->join('barang', 'barang.id_barang = barang_pegawai_unit.id_barang')
             ->join('barang_detail', 'barang_detail.id_barang_detail = barang_pegawai_unit.id_barang_detail', 'left')
             ->where('barang_pegawai_unit.id_pegawai_unit', $pegawai['id_pegawai_unit'])
@@ -536,6 +537,12 @@ class BarangPegawaiUnitController extends Controller
                     <tr>
                         <th>Kondisi</th>
                         <td>' . esc($barang['kondisi_barang']) . '</td>
+                    </tr>
+                    <tr>
+                        <th>Barcode</th>
+                        <td>
+                            <img src="'. base_url('barcode/generate/' . $barang['barcode']) . '" width="400">
+                        </td>
                     </tr>
                     <tr>
                         <th>Aksi</th>

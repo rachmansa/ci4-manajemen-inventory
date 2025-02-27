@@ -8,6 +8,8 @@ use App\Models\JenisPenggunaanModel;
 use App\Models\BarangLabModel;
 use CodeIgniter\Controller;
 use CodeIgniter\Database\BaseConnection;
+use Picqer\Barcode\BarcodeGeneratorPNG;
+
 
 class BarangDetailController extends Controller
 {
@@ -114,6 +116,8 @@ class BarangDetailController extends Controller
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan data. Pastikan semua input benar dan Nomor BMN serta Serial Number tidak duplikat.');
         }
 
+        // Generate barcode unik
+        $barcode = $this->barangDetailModel->generateBarcode();
         
         // Simpan Barang Detail
         $this->barangDetailModel->insert([
@@ -126,6 +130,7 @@ class BarangDetailController extends Controller
             'tahun_barang' => $this->request->getPost('tahun_barang'),
             'status' => $this->request->getPost('status'),
             'kondisi' => $this->request->getPost('kondisi'),
+            'barcode' => $barcode,
             
         ]);
 
@@ -262,5 +267,22 @@ class BarangDetailController extends Controller
             return redirect()->to('/barang-detail')->with('success', 'Barang Detail berhasil dihapus.');
         }
     }
+
+    public function updateByBarcode($barcode)
+    {
+        $barangDetail = $this->barangDetailModel->where('barcode', $barcode)->first();
+
+        if (!$barangDetail) {
+            return redirect()->to('/scan-barcode')->with('error', 'Barang tidak ditemukan.');
+        }
+
+        // Update kondisi barang menjadi "Terpakai"
+        $this->barangDetailModel->update($barangDetail['id_barang_detail'], [
+            'status' => 'terpakai',
+        ]);
+
+        return redirect()->to('/barang-detail')->with('success', 'Kondisi barang diperbarui.');
+    }
+
 
 }

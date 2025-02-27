@@ -24,9 +24,9 @@
                      <th>Merk & Tipe</th>
                      <th>Kode Barang</th>
                      <th>Penggunaan</th>
-                     <th>Tahun</th>
                      <th>Posisi</th>
                      <th>Status / Kondisi</th>
+                     <th>Barcode</th>
                      <th>Aksi</th>
                   </tr>
                </thead>
@@ -41,7 +41,6 @@
                         <small>Nomor BMN : <?= !empty($barang_detail['nomor_bmn']) ? $barang_detail['nomor_bmn'] : "-" ?></small>
                      </td>
                      <td><?= $barang_detail['nama_penggunaan'] ?></td>
-                     <td><?= $barang_detail['tahun_barang'] ?></td>
                      <td><?= $barang_detail['posisi_barang'] ?></td>
                      <td>
                         <span class="badge bg-<?= $barang_detail['status_class'] ?>">
@@ -51,6 +50,9 @@
                         <span class="badge bg-<?= $barang_detail['kondisi_class'] ?>">
                             <?= ucfirst($barang_detail['kondisi']) ?>
                         </span>
+                     </td>
+                     <td>
+                        <img src="<?= base_url('barcode/generate/' . $barang_detail['barcode']) ?>" width="100">
                      </td>
                      <td>
                         <a href="<?= base_url('barang-detail/edit/' . $barang_detail['id_barang_detail']) ?>" class="btn btn-warning btn-sm">Edit</a>

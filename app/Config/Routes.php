@@ -15,6 +15,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     
     $routes->get('/dashboard', 'Dashboard::index');
 
+    // BARCODE
+    $routes->get('barcode/generate/(:segment)', 'BarcodeController::generate/$1');
+    $routes->get('barang-detail/update-by-barcode/(:segment)', 'BarangDetailController::updateByBarcode/$1');
+
     // Lab
     $routes->get('/lab', 'LabController::index');
     $routes->get('/lab/create', 'LabController::create');

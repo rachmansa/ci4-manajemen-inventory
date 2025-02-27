@@ -11,7 +11,7 @@ class BarangPegawaiUnitModel extends Model
     protected $allowedFields = [
         'id_barang', 'id_barang_detail', 'id_pegawai_unit', 'id_jenis_penggunaan',
         'jumlah', 'tanggal_serah_terima_awal', 'tanggal_serah_terima_akhir',
-        'kondisi_barang', 'keterangan'
+        'kondisi_barang', 'keterangan','created_at', 'updated_at'
     ];
     protected $useTimestamps = true;
 
