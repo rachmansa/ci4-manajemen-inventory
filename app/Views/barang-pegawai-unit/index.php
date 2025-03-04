@@ -23,7 +23,9 @@
                </thead>
                <tbody>
                   <?php 
-                  foreach ($pegawai_units as $pu) : 
+                //   foreach ($pegawai_units as $pu) :
+                  foreach ($barangPegawaiUnits as $pu) : 
+
                   ?>
                   <tr>
                      <td><?= $pu['nip'] ?></td>

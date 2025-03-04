@@ -20,6 +20,7 @@ class BarangPegawaiUnitModel extends Model
     {
         return $this->select('barang_pegawai_unit.*, 
                               barang.nama_barang, 
+                              pegawai_unit.nip, 
                               pegawai_unit.nama_pegawai, 
                               jenis_penggunaan.nama_penggunaan')
             ->join('barang', 'barang.id_barang = barang_pegawai_unit.id_barang')

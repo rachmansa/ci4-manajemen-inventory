@@ -93,9 +93,8 @@ class BarangDetailController extends Controller
         // Hitung jumlah Barang Detail yang sudah ada
         $jumlahDetail = $this->barangDetailModel->where('id_barang', $idBarang)->countAllResults();
 
-        // Jika jumlah Barang Detail sudah mencapai stok, tolak penyimpanan
-        if ($jumlahDetail >= $stokBarang) {
-            return redirect()->back()->with('error', 'Jumlah Barang Detail tidak boleh melebihi stok barang.');
+        if($stokBarang <= 0) {
+            return redirect()->back()->with('error', 'Stok barang habis.');
         }
 
         // Validasi input

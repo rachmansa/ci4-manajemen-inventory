@@ -34,8 +34,10 @@ class BarangPegawaiUnitController extends Controller
 
     public function index()
     {
-        $data['barangPegawaiUnits'] = $this->barangPegawaiUnitModel->findAll();
-        $data['pegawai_units'] = $this->pegawaiUnitModel->findAll(); 
+        // $data['barangPegawaiUnits'] = $this->barangPegawaiUnitModel->findAll();
+        // $data['pegawai_units'] = $this->pegawaiUnitModel->findAll();
+        
+        $data['barangPegawaiUnits'] = $this->barangPegawaiUnitModel->getAll();
 
         return view('barang-pegawai-unit/index', $data);
     }

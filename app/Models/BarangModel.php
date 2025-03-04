@@ -33,12 +33,19 @@ class BarangModel extends Model
     }
 
 
+    // public function getAvailableBarangForDetail()
+    // {
+    //     return $this->select('barang.*')
+    //         ->join('barang_detail', 'barang_detail.id_barang = barang.id_barang', 'left')
+    //         ->groupBy('barang.id_barang')
+    //         ->having('barang.stok > COUNT(barang_detail.id_barang)', null, false)
+    //         ->findAll();
+    // }
+
     public function getAvailableBarangForDetail()
     {
         return $this->select('barang.*')
-            ->join('barang_detail', 'barang_detail.id_barang = barang.id_barang', 'left')
-            ->groupBy('barang.id_barang')
-            ->having('barang.stok > COUNT(barang_detail.id_barang)', null, false)
+            ->having('barang.stok > 0', null, false)
             ->findAll();
     }
 

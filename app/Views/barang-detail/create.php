@@ -39,7 +39,7 @@
                <div class="mb-3">
                   <label for="serial_number" class="form-label">Serial Number</label>
                   <input type="text" name="serial_number" id="serial_number" class="form-control" value="<?= old('serial_number') ?>">
-                  <small class="form-text text-muted">Opsional, hanya jika barang memiliki serial number.</small>
+                  <!-- <small class="form-text text-muted">Opsional, hanya jika barang memiliki serial number.</small> -->
                </div>
                <div class="mb-3">
                <label for="tahun_barang" class="form-label">Tahun Barang</label>
