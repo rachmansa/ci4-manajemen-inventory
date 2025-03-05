@@ -325,72 +325,6 @@ class BarangPegawaiUnitController extends Controller
     }
     
 
-
-    // Hapus Barang Pegawai
-    // public function delete($id)
-    // {
-    //     try {
-    //         $this->db->transBegin(); // **Mulai transaksi database**
-
-    //         // **Cek apakah data barang pegawai unit yang akan dihapus ada**
-    //         $barangPegawaiUnit = $this->barangPegawaiUnitModel->find($id);
-    //         if (!$barangPegawaiUnit) {
-    //             return $this->response->setJSON(['error' => 'Data tidak ditemukan'])->setStatusCode(404);
-    //         }
-
-    //         $id_barang = $barangPegawaiUnit['id_barang'];
-    //         $id_barang_detail = $barangPegawaiUnit['id_barang_detail'];
-
-    //         // **Kembalikan stok barang jika barang ada**
-    //         if ($id_barang) {
-    //             $barang = $this->barangModel->find($id_barang);
-    //             if ($barang) {
-    //                 $this->barangModel->update($id_barang, [
-    //                     'stok' => $barang['stok'] + 1
-    //                 ]);
-    //             }
-    //         }
-
-    //         // **Jika ada barang detail, ubah statusnya jadi "Tersedia" dan posisi jadi "Penyimpanan Aset"**
-    //         if ($id_barang_detail) {
-    //             $barangDetail = $this->barangDetailModel->find($id_barang_detail);
-    //             if ($barangDetail) {
-    //                 $statusUpdate = [
-    //                     'status' => 'Tersedia',
-    //                     'posisi_barang' => 'Penyimpanan Aset'
-    //                 ];
-
-    //                 // **Jika barang dalam kondisi rusak, kondisi tetap rusak**
-    //                 if ($barangDetail['kondisi'] == 'Rusak') {
-    //                     $statusUpdate['kondisi'] = 'Rusak';
-    //                 }
-
-    //                 $this->barangDetailModel->update($id_barang_detail, $statusUpdate);
-    //             }
-    //         }
-
-    //         // **Tambahkan log pergerakan barang sebelum data dihapus**
-    //         $this->logPergerakanBarangModel->insert([
-    //             'id_barang' => $id_barang,
-    //             'id_barang_detail' => $id_barang_detail,
-    //             'posisi_sebelumnya' => 'Pegawai Unit',
-    //             'posisi_sekarang' => 'Penyimpanan Aset',
-    //             'tanggal' => date('Y-m-d H:i:s'),
-    //             'keterangan' => 'Barang dikembalikan setelah dihapus'
-    //         ]);
-
-    //         // **Hapus data dari tabel barang pegawai unit**
-    //         $this->barangPegawaiUnitModel->delete($id);
-
-    //         $this->db->transCommit(); // **Simpan transaksi jika semua berhasil**
-
-    //         return $this->response->setJSON(['success' => 'Data berhasil dihapus'])->setStatusCode(200);
-    //     } catch (\Exception $e) {
-    //         $this->db->transRollback(); // **Pastikan transaksi dibatalkan jika error**
-    //         return $this->response->setJSON(['error' => 'Terjadi kesalahan saat menghapus data'])->setStatusCode(500);
-    //     }
-    // }
-
     public function delete($id)
     {
         try {
@@ -443,7 +377,8 @@ class BarangPegawaiUnitController extends Controller
             ]);
 
             // Hapus data dari tabel barang pegawai unit
-            $this->barangPegawaiUnitModel->delete($id);
+            // $this->barangPegawaiUnitModel->delete($id);
+            $this->barangPegawaiUnitModel->delete($id, true);
 
             log_message('debug', 'Kondisi Barang Pegawai Unit: ' . json_encode($barangPegawaiUnit));
 
@@ -498,7 +433,7 @@ class BarangPegawaiUnitController extends Controller
         }
 
         $barangList = $this->barangPegawaiUnitModel
-            ->select('barang_pegawai_unit.*, barang.nama_barang, barang_detail.serial_number, barang_detail.nomor_bmn, barang_detail.barcode')
+            ->select('barang_pegawai_unit.*, barang.nama_barang, barang_detail.merk, barang_detail.serial_number, barang_detail.nomor_bmn, barang_detail.barcode')
             ->join('barang', 'barang.id_barang = barang_pegawai_unit.id_barang')
             ->join('barang_detail', 'barang_detail.id_barang_detail = barang_pegawai_unit.id_barang_detail', 'left')
             ->where('barang_pegawai_unit.id_pegawai_unit', $pegawai['id_pegawai_unit'])
@@ -517,6 +452,10 @@ class BarangPegawaiUnitController extends Controller
                     <tr>
                         <th>Nama Barang</th>
                         <td>' . esc($barang['nama_barang']) . '</td>
+                    </tr>
+                    <tr>
+                        <th>Merk Barang</th>
+                        <td>' . esc($barang['merk']) . '</td>
                     </tr>
                     <tr>
                         <th>Serial Number</th>
