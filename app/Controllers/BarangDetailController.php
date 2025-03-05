@@ -88,13 +88,13 @@ class BarangDetailController extends Controller
             return redirect()->back()->with('error', 'Barang tidak ditemukan.');
         }
 
-        $stokBarang = $barang['stok'];
+        $stokAwalBarang = $barang['stok_awal'];
 
         // Hitung jumlah Barang Detail yang sudah ada
         $jumlahDetail = $this->barangDetailModel->where('id_barang', $idBarang)->countAllResults();
 
-        if($stokBarang <= 0) {
-            return redirect()->back()->with('error', 'Stok barang habis.');
+        if($jumlahDetail < $stokAwalBarang) {
+            return redirect()->back()->with('error', 'Jumlah Barang Detail melebihi jumlah stok awal.');
         }
 
         // Validasi input

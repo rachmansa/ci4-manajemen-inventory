@@ -198,14 +198,12 @@ class BarangKeluarModel extends Model
                 $logModel->insert([
                     'id_barang_detail' => trim($id_barang_detail),
                     'id_barang' => $data['id_barang'],
-                    'tanggal' => date('Y-m-d H:i:s'),
                     'keterangan' => 'Barang Keluar',
                 ]);
             }
         } else {
             $logModel->insert([
                 'id_barang' => $data['id_barang'],
-                'tanggal' => date('Y-m-d H:i:s'),
                 'keterangan' => 'Barang Keluar',
             ]);
         }

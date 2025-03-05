@@ -265,7 +265,6 @@ class BarangPegawaiUnitController extends Controller
                     'id_barang_detail' => $id_barang_detail_lama,
                     'posisi_sebelumnya' => 'Pegawai Unit',
                     'posisi_sekarang' => 'Tersedia',
-                    'tanggal' => date('Y-m-d H:i:s'),
                     'keterangan' => 'Barang dikembalikan setelah diperbarui'
                 ]);
     
@@ -274,7 +273,6 @@ class BarangPegawaiUnitController extends Controller
                     'id_barang_detail' => $id_barang_detail_baru,
                     'posisi_sebelumnya' => 'Tersedia',
                     'posisi_sekarang' => 'Pegawai Unit',
-                    'tanggal' => date('Y-m-d H:i:s'),
                     'keterangan' => 'Barang digunakan setelah diperbarui'
                 ]);
             }
@@ -441,7 +439,6 @@ class BarangPegawaiUnitController extends Controller
                 'id_barang_detail' => $id_barang_detail ?: null, // Pastikan bisa NULL
                 'posisi_sebelumnya' => 'Pegawai Unit',
                 'posisi_sekarang' => 'Penyimpanan Aset',
-                'tanggal' => date('Y-m-d H:i:s'),
                 'keterangan' => 'Barang dikembalikan setelah dihapus'
             ]);
 

@@ -50,6 +50,7 @@ class BarangController extends Controller
         try {
             $this->barangModel->insert([
                 'nama_barang'  => $this->request->getPost('nama_barang'),
+                'stok_awal'    => $this->request->getPost('stok'),
                 'stok'         => $this->request->getPost('stok'),
                 'stok_minimal' => $this->request->getPost('stok_minimal'),
                 'kode_barang'  => $this->request->getPost('kode_barang'),
@@ -99,6 +100,7 @@ class BarangController extends Controller
         try {
             $this->barangModel->update($id, [
                 'nama_barang'  => $this->request->getPost('nama_barang'),
+                'stok_awal'    => $this->request->getPost('stok_awal'),
                 'stok'         => $this->request->getPost('stok'),
                 'stok_minimal' => $this->request->getPost('stok_minimal'),
                 'kode_barang'  => $this->request->getPost('kode_barang'),

@@ -22,7 +22,12 @@
                </div>
 
                <div class="mb-3">
-                  <label for="stok" class="form-label">Stok</label>
+                  <label for="stok_awal" class="form-label">Stok Awal</label>
+                  <input type="number" class="form-control" name="stok_awal" id="stok_awal" value="<?= $barang['stok_awal'] ?>" required>
+               </div>
+
+               <div class="mb-3">
+                  <label for="stok" class="form-label">Stok Sekarang</label>
                   <input type="number" class="form-control" name="stok" id="stok" value="<?= $barang['stok'] ?>" required>
                </div>
 
@@ -64,9 +69,8 @@
                         <?php endforeach; ?>
                   </select>
                </div>
-
-               <button type="submit" class="btn btn-primary">Simpan</button>
                <a href="<?= base_url('barang') ?>" class="btn btn-secondary">Kembali</a>
+               <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
          </div>
       </div>

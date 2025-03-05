@@ -59,9 +59,8 @@
                   <label for="deskripsi" class="form-label">Deskripsi</label>
                   <textarea class="form-control" name="deskripsi" id="deskripsi" required></textarea>
                </div>
-
-               <button type="submit" class="btn btn-primary">Simpan</button>
                <a href="<?= base_url('barang') ?>" class="btn btn-secondary">Kembali</a>
+               <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
          </div>
       </div>

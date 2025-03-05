@@ -42,7 +42,9 @@
                      </td>
                      <td><?= $barang['nama_jenis'] ?></td>
                      <td>
-                        <?= $barang['stok'].' '.$barang['nama_satuan']  ?>  
+                        Stok Awal : <?= $barang['stok_awal'].' '.$barang['nama_satuan']  ?>  
+                        <br>
+                        Stok Sekarang : <?= $barang['stok'].' '.$barang['nama_satuan']  ?>  
                         <br>
                         <span style="font-size: 10px;">Minimal : <?= $barang['stok_minimal']?></span>
                      </td>
